@@ -28,6 +28,10 @@ export async function middleware(request: NextRequest) {
     secret: process.env.NEXTAUTH_SECRET,
   });
 
+  console.log("Middleware path:", request.nextUrl.pathname);
+  console.log("Token found:", !!token);
+  console.log("Token details:", token);
+
   const isAuthenticated = !!token;
 
   // Redirect authenticated users away from auth pages

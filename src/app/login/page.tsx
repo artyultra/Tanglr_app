@@ -5,10 +5,11 @@ import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { LoginRequest } from "@/lib/api";
 
 export default function Login() {
   const router = useRouter();
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<LoginRequest>({
     username: "",
     password: "",
   });

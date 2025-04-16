@@ -2,10 +2,8 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import axios from "axios";
-import type { NextAuthOptions } from "next-auth";
 
-export const authOptions: NextAuthOptions = {
-  debug: true, // Enable this to see detailed logs
+const handler = NextAuth({
   providers: [
     CredentialsProvider({
       name: "Credentials",
@@ -14,34 +12,33 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        if (!credentials?.username || !credentials?.password) {
-          return null;
-        }
-
         try {
-          const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-          console.log("Attempting to authenticate with API:", apiUrl);
+          if (!credentials?.username || !credentials?.password) {
+            return null;
+          }
 
+          const apiUrl = process.env.NEXT_PUBLIC_API_URL;
           const response = await axios.post(`${apiUrl}/login`, {
             username: credentials.username,
             password: credentials.password,
           });
 
-          console.log("API Response:", response.data);
+          const user = response.data;
 
-          if (response.data) {
+          if (user) {
+            // Include token and refresh token from your API
             return {
-              id: response.data.id,
-              name: response.data.username,
-              email: response.data.email,
-              accessToken: response.data.token,
-              refreshToken: response.data.refresh_token,
+              id: user.id,
+              name: user.username,
+              email: user.email,
+              accessToken: user.token,
+              refreshToken: user.refresh_token,
             };
           }
 
           return null;
         } catch (error) {
-          console.error("Authentication error:", error);
+          console.error("Authorization error:", error);
           return null;
         }
       },
@@ -57,10 +54,10 @@ export const authOptions: NextAuthOptions = {
       return token;
     },
     async session({ session, token }) {
-      if (session.user && token) {
-        session.user.id = token.id as string;
-        session.user.accessToken = token.accessToken as string;
-        session.user.refreshToken = token.refreshToken as string;
+      if (token) {
+        session.user.id = token.id;
+        session.user.accessToken = token.accessToken;
+        session.user.refreshToken = token.refreshToken;
       }
       return session;
     },
@@ -72,8 +69,6 @@ export const authOptions: NextAuthOptions = {
     strategy: "jwt",
     maxAge: 60 * 60, // 1 hour
   },
-  secret: process.env.NEXTAUTH_SECRET,
-};
+});
 
-const handler = NextAuth(authOptions);
 export { handler as GET, handler as POST };

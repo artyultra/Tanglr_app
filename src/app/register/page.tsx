@@ -4,11 +4,11 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { userApi } from "@/lib/api";
+import { RegisterRequest, userApi } from "@/lib/api";
 
 export default function RegisterPage() {
   const router = useRouter();
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<RegisterRequest>({
     username: "",
     email: "",
     password: "",
@@ -38,11 +38,7 @@ export default function RegisterPage() {
     setLoading(true);
 
     try {
-      await userApi.register(
-        formData.username,
-        formData.email,
-        formData.password,
-      );
+      await userApi.register(formData);
       // Redirect to login page after successful registration
       router.push("/login?registered=true");
     } catch (error: any) {
