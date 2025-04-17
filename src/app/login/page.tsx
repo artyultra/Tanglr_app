@@ -5,7 +5,7 @@ import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { LoginRequest } from "@/lib/api";
+import { LoginRequest } from "../api/types";
 
 export default function Login() {
   const router = useRouter();

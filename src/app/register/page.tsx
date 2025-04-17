@@ -4,7 +4,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { RegisterRequest, userApi } from "@/lib/api";
+import { userService } from "../api";
+import { RegisterRequest } from "../api/types";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -38,7 +39,7 @@ export default function RegisterPage() {
     setLoading(true);
 
     try {
-      await userApi.register(formData);
+      await userService.register(formData);
       // Redirect to login page after successful registration
       router.push("/login?registered=true");
     } catch (error: any) {
