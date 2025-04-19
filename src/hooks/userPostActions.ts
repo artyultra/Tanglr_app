@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { userService } from "@/app/api";
-import { GetPostsResponse, GetUserProfileRespone } from "@/app/api/types";
+import { GetPostsResponse } from "@/app/api/types";
 
-export function useUserPostActions() {
+export function useUserPostActions(username: string) {
   const [postText, setPostText] = useState<string>("");
   const [charCountPost, setCharCountPost] = useState<number>(0);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
@@ -36,7 +36,7 @@ export function useUserPostActions() {
   const fetchPosts = async () => {
     try {
       setIsLoading(true);
-      const response = await userService.getPosts();
+      const response = await userService.getPosts(username);
       console.log("Posts response:", response);
       setPosts(response);
     } catch (error) {

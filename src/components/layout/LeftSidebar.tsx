@@ -1,13 +1,12 @@
 // File: components/layout/LeftSidebar.tsx
 
-import { User } from "next-auth";
 import FriendSpace from "../profile/FriendSpace";
 import MusicPlayer from "../profile/MusicPlayer";
 import ProfileCard from "../profile/ProfileCard";
 import { GetUserProfileRespone } from "@/app/api/types";
 
 interface Props {
-  user: GetUserProfileRespone;
+  user?: GetUserProfileRespone;
   isLoadingUser: boolean;
   errorUser: Error | null;
 }

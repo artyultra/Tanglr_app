@@ -58,6 +58,7 @@ const UserPosts: React.FC<UserPostsProps> = ({
       <div className="px-4 py-5 sm:p-6">
         {/* Header with refresh button */}
         <div className="flex items-center justify-between mb-4">
+          90p-p
           <h2 className="text-lg font-medium text-gray-900">Recent Posts</h2>
           <button
             onClick={() => fetchPosts()}
@@ -93,7 +94,7 @@ const UserPosts: React.FC<UserPostsProps> = ({
                       {post.username ? (
                         <img
                           className="h-10 w-10 rounded-full object-cover"
-                          src={""}
+                          src={"./kiganoakuma.png"}
                           alt={`${post.username || post.username}'s avatar`}
                         />
                       ) : (

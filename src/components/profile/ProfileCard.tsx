@@ -2,16 +2,14 @@
 "use client";
 
 import { GetUserProfileRespone } from "@/app/api/types";
-import { useSession } from "next-auth/react";
 
 interface Props {
-  user: GetUserProfileRespone;
+  user?: GetUserProfileRespone;
   isLoadingUser: boolean;
   errorUser: Error | null;
 }
 
 const ProfileCard: React.FC<Props> = ({ user, isLoadingUser, errorUser }) => {
-  const { data: session } = useSession();
   if (isLoadingUser)
     return (
       <div className="bg-gray-800 border-2 border-gray-400 rounded-4xl p-4 mb-4">
@@ -24,11 +22,21 @@ const ProfileCard: React.FC<Props> = ({ user, isLoadingUser, errorUser }) => {
         </div>
       </div>
     );
+  if (errorUser)
+    return (
+      <div className="bg-gray-800 border-2 border-gray-400 rounded-4xl p-4 mb-4">
+        <p className="text-red-500">Error: {errorUser.message}</p>
+      </div>
+    );
   return (
     <div className="bg-gray-800 border-2 border-gray-400 rounded-4xl p-4 mb-4">
       <div className="text-center mb-3">
         <div className="w-32 h-32 bg-gray-300 mx-auto mb-2 border-2 border-gray-500">
-          <img src={} alt="Profile" className="w-full h-full object-cover" />
+          <img
+            src={"/kiganoakuma.png"}
+            alt="Profile"
+            className="w-full h-full object-cover"
+          />
         </div>
         <h2 className="text-xl font-bold">{user?.username || "User"}</h2>
         <p className="text-xs text-gray-600">Online Now!</p>

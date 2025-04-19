@@ -33,8 +33,8 @@ export const userService = {
     const response = await api.post<CreatePostResponse>("/posts", request);
     return response.data;
   },
-  async getPosts(): Promise<GetPostsResponse> {
-    const response = await api.get<GetPostsResponse>("/posts");
+  async getPosts(username: string): Promise<GetPostsResponse> {
+    const response = await api.get<GetPostsResponse>(`/posts/${username}`);
     return response.data;
   },
   async getUserProfile(username: string): Promise<GetUserProfileRespone> {

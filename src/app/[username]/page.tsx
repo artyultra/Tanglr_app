@@ -47,7 +47,11 @@ export default function Dashboard() {
       {/* Main Content */}
       <div className="max-w-6xl h-[10%] mx-auto px-4 py-6 grid grid-cols-1 md:grid-cols-12 gap-6 flex-grow">
         {/* Left Sidebar */}
-        <LeftSidebar user={user} />
+        <LeftSidebar
+          user={user}
+          isLoadingUser={isLoadingUser}
+          errorUser={errorUser}
+        />
 
         {/* Main Content Area */}
         <MainContent />
