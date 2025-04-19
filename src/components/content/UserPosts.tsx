@@ -28,8 +28,12 @@ function timeAgo(created_at: string) {
   return `${years} yr${years > 1 ? "s" : ""}`;
 }
 
-const UserPosts: React.FC<UserPostsProps> = ({ posts, isLoading, error, fetchPosts }) => {
-
+const UserPosts: React.FC<UserPostsProps> = ({
+  posts,
+  isLoading,
+  error,
+  fetchPosts,
+}) => {
   if (isLoading)
     return (
       <div className="overflow-hidden rounded-lg bg-gray-50">
@@ -65,7 +69,7 @@ const UserPosts: React.FC<UserPostsProps> = ({ posts, isLoading, error, fetchPos
         </div>
 
         {/* Post List */}
-        <div className="space-y-4">
+        <div className="overflow-scroll max-h-[50vh] space-y-4">
           {!posts || posts.length === 0 ? (
             <div className="text-center py-8 text-gray-500">
               <p>No posts found</p>
@@ -73,73 +77,74 @@ const UserPosts: React.FC<UserPostsProps> = ({ posts, isLoading, error, fetchPos
             </div>
           ) : (
             [...posts]
-            .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
-            .map((post) => (
-              <div
-                key={post.id}
-                className="bg-white rounded-md p-4 hover:shadow-sm transition duration-150"
-              >
-                <div className="flex space-x-3">
-                  {/* Avatar */}
-                  <div className="flex-shrink-0">
-                    {post.username ? (
-                      <img
-                        className="h-10 w-10 rounded-full object-cover"
-                        src={""}
-                        alt={`${post.username || post.username}'s avatar`}
-                      />
-                    ) : (
-                      <div className="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center">
-                        <span className="text-gray-500 text-sm font-medium">
-                          {post.username}
-                        </span>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Content */}
-                  <div className="min-w-0 flex-1">
-                    {/* User info and timestamp */}
-                    <div className="flex items-center">
-                      <p className="text-sm font-medium text-gray-900">
-                        {post.username}
-                      </p>
-                      <span className="mx-1 text-gray-400">·</span>
-                      <p className="text-sm text-gray-500">
-                        {timeAgo(post.created_at)}
-                      </p>
+              .sort(
+                (a, b) =>
+                  new Date(b.created_at).getTime() -
+                  new Date(a.created_at).getTime(),
+              )
+              .map((post) => (
+                <div
+                  key={post.id}
+                  className="bg-white rounded-md p-4 hover:shadow-sm transition duration-150"
+                >
+                  <div className="flex space-x-3">
+                    {/* Avatar */}
+                    <div className="flex-shrink-0">
+                      {post.username ? (
+                        <img
+                          className="h-10 w-10 rounded-full object-cover"
+                          src={""}
+                          alt={`${post.username || post.username}'s avatar`}
+                        />
+                      ) : (
+                        <div className="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center">
+                          <span className="text-gray-500 text-sm font-medium">
+                            {post.username}
+                          </span>
+                        </div>
+                      )}
                     </div>
 
-                    {/* Post body */}
-                    <p className="mt-1 text-sm text-gray-800 whitespace-pre-line">
-                      {post.body}
-                    </p>
+                    {/* Content */}
+                    <div className="min-w-0 flex-1">
+                      {/* User info and timestamp */}
+                      <div className="flex items-center">
+                        <p className="text-sm font-medium text-gray-900">
+                          {post.username}
+                        </p>
+                        <span className="mx-1 text-gray-400">·</span>
+                        <p className="text-sm text-gray-500">
+                          {timeAgo(post.created_at)}
+                        </p>
+                      </div>
 
-                    {/* Action buttons */}
-                    <div className="mt-3 flex space-x-6">
-                      <button className="flex items-center text-gray-400 hover:text-gray-600 transition-colors">
-                        <MessageCircle className="w-4 h-4 mr-1" />
-                        <span className="text-xs">
-                          {post.comments_count || 0}
-                        </span>
-                      </button>
-                      <button className="flex items-center text-gray-400 hover:text-pink-500 transition-colors">
-                        <Heart className="w-4 h-4 mr-1" />
-                        <span className="text-xs">{post.likes_count || 0}</span>
-                      </button>
-                      <button className="flex items-center text-gray-400 hover:text-gray-600 transition-colors">
-                        <ShareIcon className="w-4 h-4 mr-1" />
-                      </button>
+                      {/* Post body */}
+                      <p className="mt-1 text-sm text-gray-800 whitespace-pre-line">
+                        {post.body}
+                      </p>
+
+                      {/* Action buttons */}
+                      <div className="mt-3 flex space-x-6">
+                        <button className="flex items-center text-gray-400 hover:text-gray-600 transition-colors">
+                          <MessageCircle className="w-4 h-4 mr-1" />
+                          <span className="text-xs">{0}</span>
+                        </button>
+                        <button className="flex items-center text-gray-400 hover:text-pink-500 transition-colors">
+                          <Heart className="w-4 h-4 mr-1" />
+                          <span className="text-xs">{0}</span>
+                        </button>
+                        <button className="flex items-center text-gray-400 hover:text-gray-600 transition-colors">
+                          <ShareIcon className="w-4 h-4 mr-1" />
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            ))
+              ))
           )}
         </div>
       </div>
     </div>
   );
-});
-
+};
 export default UserPosts;

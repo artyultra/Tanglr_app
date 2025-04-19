@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { userService } from "@/app/api";
-import { GetPostsResponse } from "@/app/api/types";
+import { GetPostsResponse, GetUserProfileRespone } from "@/app/api/types";
 
-export function userPostActions() {
+export function useUserPostActions() {
   const [postText, setPostText] = useState<string>("");
   const [charCountPost, setCharCountPost] = useState<number>(0);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
@@ -50,6 +50,7 @@ export function userPostActions() {
   useEffect(() => {
     fetchPosts();
   }, []);
+
   return {
     postText,
     setPostText,

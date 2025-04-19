@@ -49,4 +49,14 @@ interface Post {
   username: string;
 }
 
+interface UserProfile {
+  id: string;
+  username: string;
+  email: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export type GetUserProfileRespone = UserProfile;
+
 export type GetPostsResponse = Post[];

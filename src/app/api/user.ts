@@ -8,6 +8,7 @@ import {
   CreatePostRequest,
   CreatePostResponse,
   GetPostsResponse,
+  GetUserProfileRespone,
 } from "./types";
 
 export const userService = {
@@ -34,6 +35,10 @@ export const userService = {
   },
   async getPosts(): Promise<GetPostsResponse> {
     const response = await api.get<GetPostsResponse>("/posts");
+    return response.data;
+  },
+  async getUserProfile(username: string): Promise<GetUserProfileRespone> {
+    const response = await api.get<GetUserProfileRespone>(`/users/${username}`);
     return response.data;
   },
 };

@@ -1,16 +1,22 @@
+// src/app/[username]/page.tsx
 "use client";
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useEffect } from "react";
 import NavBar from "@/components/layout/NavBar";
 import Footer from "@/components/layout/Footer";
 import LeftSidebar from "@/components/layout/LeftSidebar";
 import MainContent from "@/components/layout/MainContent";
 import RightSideBar from "@/components/layout/RightSideBar";
+import { useUserProfileActions } from "@/hooks/useUserProfileActions";
 
 export default function Dashboard() {
   const { status } = useSession();
   const router = useRouter();
+
+  const params = useParams();
+  const username = params.username as string;
+  const { user, isLoadingUser, errorUser } = useUserProfileActions(username);
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -34,14 +40,14 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-600 to-gray-900 font-sans flex flex-col">
+    <div className="max-h-screen bg-gradient-to-b from-gray-600 to-gray-900 font-sans flex flex-col">
       {/* Top Navigation Bar - MySpace Style */}
       <NavBar />
 
       {/* Main Content */}
-      <div className="max-w-6xl mx-auto px-4 py-6 grid grid-cols-1 md:grid-cols-12 gap-6 flex-grow">
+      <div className="max-w-6xl h-[10%] mx-auto px-4 py-6 grid grid-cols-1 md:grid-cols-12 gap-6 flex-grow">
         {/* Left Sidebar */}
-        <LeftSidebar />
+        <LeftSidebar user={user} />
 
         {/* Main Content Area */}
         <MainContent />

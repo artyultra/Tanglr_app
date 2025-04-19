@@ -40,7 +40,7 @@ export default function Login() {
         setError("Invalid username or password");
       } else {
         // Redirect to dashboard on successful login
-        router.push("/dashboard");
+        router.push(`${formData.username}`);
       }
     } catch (error) {
       setError("An error occurred during login. Please try again.");

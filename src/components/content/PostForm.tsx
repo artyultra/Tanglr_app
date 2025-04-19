@@ -14,7 +14,7 @@ type PostFormProps = {
 const PostForm: React.FC<PostFormProps> = ({postText, charCountPost, isSubmitting, handlePostTextChange,handleSubmitPost}) => {
 
   return (
-    <div className="bg-gray-800 border-2 border-gray-400 rounded-3xl p-4 mb-4 flex-grow">
+    <div className="bg-gray-800 border-2 border-gray-400 rounded-3xl p-4 mb-4">
       <h3 className="text-xl font-bold pl-3 mb-2">My Feed:</h3>
       <div className="bg-gray-700 text-gray-100 p-3 rounded-lg">
         <textarea
