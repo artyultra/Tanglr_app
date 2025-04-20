@@ -40,7 +40,7 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="max-h-screen bg-gradient-to-b from-gray-600 to-gray-900 font-sans flex flex-col">
+    <div className="max-h-[100vh] bg-gradient-to-b from-gray-600 to-gray-900 font-sans flex flex-col">
       {/* Top Navigation Bar - MySpace Style */}
       <NavBar />
 
@@ -55,9 +55,6 @@ export default function Dashboard() {
 
         {/* Main Content Area */}
         <MainContent />
-
-        {/* Right Sidebar */}
-        <RightSideBar />
       </div>
 
       {/* Footer with sparkly effects */}

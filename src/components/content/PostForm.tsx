@@ -8,14 +8,20 @@ type PostFormProps = {
   isSubmitting: boolean;
   handlePostTextChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
   handleSubmitPost: () => void;
+  handleCancel: () => void;
 
 }
 
-const PostForm: React.FC<PostFormProps> = ({postText, charCountPost, isSubmitting, handlePostTextChange,handleSubmitPost}) => {
+const PostForm: React.FC<PostFormProps> = ({
+  postText,
+  charCountPost,
+  isSubmitting, 
+  handlePostTextChange, 
+  handleSubmitPost, 
+  handleCancel}) => {
 
   return (
-    <div className="bg-gray-800 border-2 border-gray-400 rounded-3xl p-4 mb-4">
-      <h3 className="text-xl font-bold pl-3 mb-2">My Feed:</h3>
+    <div className="postForm bg-gray-800 rounded-3xl mb-4">
       <div className="bg-gray-700 text-gray-100 p-3 rounded-lg">
         <textarea
           id="post"
@@ -29,6 +35,13 @@ const PostForm: React.FC<PostFormProps> = ({postText, charCountPost, isSubmittin
           <div className="text-gray-400">
             <span id="charCount">{charCountPost}</span>/140
           </div>
+          <div>
+          <button
+            onClick={handleCancel}
+            className="bg-gray-200 hover:bg-gray-400 text-gray-600 font-bold py-1 px-3 rounded mr-2"
+          >
+            Cancel
+          </button>
           <button
             onClick={handleSubmitPost}
             disabled={isSubmitting}
@@ -36,6 +49,7 @@ const PostForm: React.FC<PostFormProps> = ({postText, charCountPost, isSubmittin
           >
             Post
           </button>
+          </div>
         </div>
       </div>
     </div>

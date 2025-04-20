@@ -3,13 +3,20 @@
 "use client";
 
 import { GetPostsResponse } from "@/app/api/types";
-import { Heart, MessageCircle, RefreshCw, ShareIcon } from "lucide-react";
+import {
+  Heart,
+  MessageCircle,
+  Pencil,
+  RefreshCw,
+  ShareIcon,
+} from "lucide-react";
 
 type UserPostsProps = {
   posts: GetPostsResponse;
   isLoading: boolean;
   error: Error | null;
   fetchPosts: () => void;
+  handleShowForm: () => void;
 };
 
 function timeAgo(created_at: string) {
@@ -33,6 +40,7 @@ const UserPosts: React.FC<UserPostsProps> = ({
   isLoading,
   error,
   fetchPosts,
+  handleShowForm,
 }) => {
   if (isLoading)
     return (
@@ -53,12 +61,17 @@ const UserPosts: React.FC<UserPostsProps> = ({
     );
 
   return (
-    <div className="overflow-hidden rounded-lg bg-gray-50">
+    <div className=" max-h-[40vh] overflow-y-auto rounded-lg bg-gray-50">
       {/* Header and content container */}
       <div className="px-4 py-5 sm:p-6">
         {/* Header with refresh button */}
         <div className="flex items-center justify-between mb-4">
-          90p-p
+          <button
+            onClick={handleShowForm}
+            className="inline-flex items-center text-sm text-gray-500 hover:text-gray-700"
+          >
+            <Pencil size={20} />
+          </button>
           <h2 className="text-lg font-medium text-gray-900">Recent Posts</h2>
           <button
             onClick={() => fetchPosts()}
