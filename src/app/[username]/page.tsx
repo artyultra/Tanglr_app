@@ -7,7 +7,6 @@ import NavBar from "@/components/layout/NavBar";
 import Footer from "@/components/layout/Footer";
 import LeftSidebar from "@/components/layout/LeftSidebar";
 import MainContent from "@/components/layout/MainContent";
-import RightSideBar from "@/components/layout/RightSideBar";
 import { useUserProfileActions } from "@/hooks/useUserProfileActions";
 
 export default function Dashboard() {

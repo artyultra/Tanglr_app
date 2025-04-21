@@ -5,7 +5,6 @@ import PostForm from "./PostForm";
 import UserPosts from "./UserPosts";
 import { useParams } from "next/navigation";
 import { useState } from "react";
-import { Pencil } from "lucide-react";
 
 const UserFeed: React.FC = () => {
   const [showForm, setShowForm] = useState<boolean>(false);

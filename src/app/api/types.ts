@@ -55,8 +55,11 @@ interface UserProfile {
   email: string;
   created_at: string;
   updated_at: string;
+  avatar_url: string;
 }
 
 export type GetUserProfileRespone = UserProfile;
+
+export type GetUserProfileListReponse = UserProfile[];
 
 export type GetPostsResponse = Post[];

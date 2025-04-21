@@ -2,6 +2,9 @@
 
 "use client";
 
+import styles from "./PostForm.module.css"
+
+
 type PostFormProps = {
   postText: string;
   charCountPost: number;
@@ -21,7 +24,7 @@ const PostForm: React.FC<PostFormProps> = ({
   handleCancel}) => {
 
   return (
-    <div className="postForm bg-gray-800 rounded-3xl mb-4">
+    <div className={`${styles.postForm} bg-gray-800 rounded-3xl mb-4`}>
       <div className="bg-gray-700 text-gray-100 p-3 rounded-lg">
         <textarea
           id="post"

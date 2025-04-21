@@ -2,8 +2,10 @@
 
 "use client";
 import { signOut } from "next-auth/react";
+import { useSession } from "next-auth/react";
 
 const NavBar: React.FC = () => {
+  const session = useSession();
   return (
     <nav className="bg-gray-900 text-white shadow px-0 py-2">
       <div className="max-w-6xl mx-auto flex items-center justify-between">
@@ -16,8 +18,11 @@ const NavBar: React.FC = () => {
             <a href="#" className="text-white hover:text-blue-300">
               Home
             </a>
-            <a href="#" className="text-white hover:text-blue-300">
-              Browse
+            <a
+              href={`/${session.data?.user?.name}/friends`}
+              className="text-white hover:text-blue-300"
+            >
+              Social
             </a>
             <a href="#" className="text-white hover:text-blue-300">
               Search
