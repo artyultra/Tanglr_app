@@ -19,4 +19,12 @@ export const friendsService = {
     );
     return response.data;
   },
+  async getFriendsList(
+    username: string,
+  ): Promise<UserTypes.GetFriendsListResp> {
+    const response = await api.get<UserTypes.GetFriendsListResp>(
+      `users/${username}/friendslist`,
+    );
+    return response.data;
+  },
 };

@@ -15,7 +15,10 @@ const NavBar: React.FC = () => {
             <span className="text-gray-700">hive</span>
           </span>
           <div className="space-x-4 flex">
-            <a href="#" className="text-white hover:text-blue-300">
+            <a
+              href={`/${session.data?.user?.name}`}
+              className="text-white hover:text-blue-300"
+            >
               Home
             </a>
             <a

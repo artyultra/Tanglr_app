@@ -1,9 +1,9 @@
 import { userService } from "@/app/api";
-import { GetUserProfileRespone } from "@/app/api/types";
+import { UserTypes } from "@/app/api";
 import { useEffect, useState } from "react";
 
 export function useUserProfileActions(username: string) {
-  const [user, setUser] = useState<GetUserProfileRespone>();
+  const [user, setUser] = useState<UserTypes.GetUserProfileResponse>();
   const [isLoadingUser, setIsLoadingUser] = useState<boolean>(false);
   const [errorUser, setErrorUser] = useState<Error | null>(null);
 

@@ -1,14 +1,11 @@
 import { useEffect, useState, useCallback } from "react";
 import { friendsService } from "@/app/api/friends";
-import {
-  friendRequestResponse,
-  GetUserProfileListReponse,
-} from "@/app/api/types";
+import { UserTypes } from "@/app/api";
 import { useSession } from "next-auth/react";
 
 export function useFriendActions(username: string) {
   // fetch users
-  const [users, setUsers] = useState<GetUserProfileListReponse>([]);
+  const [users, setUsers] = useState<UserTypes.GetUserProfileListResponse>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [errorUsers, setErrorUsers] = useState<Error | null>(null);
   const { data: session, status } = useSession();
@@ -29,8 +26,16 @@ export function useFriendActions(username: string) {
     }
   }, [username, status]); // These dependencies are fine
 
+  useEffect(() => {
+    // Only fetch users when authentication is complete
+    if (status === "authenticated") {
+      fetchUsers();
+    }
+  }, [status, fetchUsers]); // This is likely creating the loop
+
   // submit friend request
-  const [friendResponse, setFriendResponse] = useState<friendRequestResponse>();
+  const [friendResponse, setFriendResponse] =
+    useState<UserTypes.FriendRequestResponse>();
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [errorFriendReq, setErrorFriendReq] = useState<Error | null>(null);
 
@@ -55,13 +60,6 @@ export function useFriendActions(username: string) {
     },
     [username, status],
   ); // These dependencies are fine
-
-  useEffect(() => {
-    // Only fetch users when authentication is complete
-    if (status === "authenticated") {
-      fetchUsers();
-    }
-  }, [status, fetchUsers]); // This is likely creating the loop
 
   return {
     users,

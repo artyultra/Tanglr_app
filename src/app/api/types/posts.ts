@@ -14,6 +14,7 @@ export interface Post {
   updated_at: string;
   user_id: string;
   username: string;
+  user_avatar_url: string;
 }
 
 export type GetPostsResponse = Post[];

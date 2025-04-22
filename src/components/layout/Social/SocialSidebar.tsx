@@ -1,27 +1,13 @@
 // File: components/layout/LeftSidebar.tsx
 
-import FriendSpace from "../profile/FriendSpace";
-import MusicPlayer from "../profile/MusicPlayer";
-import ProfileCard from "../profile/ProfileCard";
 import { UserTypes } from "@/app/api";
+import UsersPage from "@/components/UsersPage";
 
-interface Props {
-  user?: UserTypes.GetUserProfileResponse;
-  isLoadingUser: boolean;
-  errorUser: Error | null;
-}
-
-const LeftSidebar: React.FC<Props> = ({ user, isLoadingUser, errorUser }) => {
+const SocialSidebar: React.FC = () => {
   return (
-    <div className="md:col-span-4">
-      <ProfileCard
-        user={user}
-        isLoadingUser={isLoadingUser}
-        errorUser={errorUser}
-      />
-
+    <div className="md:col-span-6 flex flex-col rounded-3xl p-4 mb-4">
       {/* Comments Section */}
-      <div className="md:col-span-2 bg-gray-800 border-2 border-gray-400 rounded-4xl p-4 mb-4">
+      <div className="md:col-span-3 bg-gray-800 border-2 border-gray-400 rounded-4xl p-4 mb-4">
         <h3 className="text-lg font-bold border-b border-gray-300 pb-1 mb-2">
           Comments (0)
         </h3>
@@ -39,14 +25,9 @@ const LeftSidebar: React.FC<Props> = ({ user, isLoadingUser, errorUser }) => {
           </button>
         </div>
       </div>
-
-      {/* Friend Space */}
-      <FriendSpace />
-
-      {/* Music Player */}
-      <MusicPlayer />
+      <UsersPage />
     </div>
   );
 };
 
-export default LeftSidebar;
+export default SocialSidebar;

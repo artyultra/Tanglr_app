@@ -1,15 +1,16 @@
 // File: components/profile/ProfileCard.tsx
 "use client";
 
-import { GetUserProfileRespone } from "@/app/api/types";
+import { UserTypes } from "@/app/api";
 
 interface Props {
-  user?: GetUserProfileRespone;
+  user?: UserTypes.GetUserProfileResponse;
   isLoadingUser: boolean;
   errorUser: Error | null;
 }
 
 const ProfileCard: React.FC<Props> = ({ user, isLoadingUser, errorUser }) => {
+  console.log("User:", user);
   if (isLoadingUser)
     return (
       <div className="bg-gray-800 border-2 border-gray-400 rounded-4xl p-4 mb-4">
@@ -33,7 +34,7 @@ const ProfileCard: React.FC<Props> = ({ user, isLoadingUser, errorUser }) => {
       <div className="text-center mb-3">
         <div className="w-32 h-32 bg-gray-300 mx-auto mb-2 border-2 border-gray-500">
           <img
-            src={"/kiganoakuma.png"}
+            src={`${user?.avatar_url}`}
             alt="Profile"
             className="w-full h-full object-cover"
           />

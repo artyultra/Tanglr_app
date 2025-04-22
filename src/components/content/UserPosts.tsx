@@ -2,7 +2,7 @@
 
 "use client";
 
-import { GetPostsResponse } from "@/app/api/types";
+import { PostTypes } from "@/app/api";
 import {
   Heart,
   MessageCircle,
@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 
 type UserPostsProps = {
-  posts: GetPostsResponse;
+  posts: PostTypes.GetPostsResponse;
   isLoading: boolean;
   error: Error | null;
   fetchPosts: () => void;
@@ -42,6 +42,7 @@ const UserPosts: React.FC<UserPostsProps> = ({
   fetchPosts,
   handleShowForm,
 }) => {
+  console.log(posts);
   if (isLoading)
     return (
       <div className="overflow-hidden rounded-lg bg-gray-50">
@@ -107,7 +108,7 @@ const UserPosts: React.FC<UserPostsProps> = ({
                       {post.username ? (
                         <img
                           className="h-10 w-10 rounded-full object-cover"
-                          src={"./kiganoakuma.png"}
+                          src={post.user_avatar_url}
                           alt={`${post.username || post.username}'s avatar`}
                         />
                       ) : (
