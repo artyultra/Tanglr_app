@@ -1,15 +1,32 @@
-// File: src/app/[username]/friends/page.tsx
+// File: src/Components/UsersPage.tsx
 
 "use client";
 
 import { useFriendActions } from "@/hooks/useFriendActions";
 import { MessageSquareIcon, PhoneIcon, UserRoundPlus } from "lucide-react";
+import { useSession } from "next-auth/react";
 import { useParams } from "next/navigation";
 
-export default function FriendsPage() {
-  const params = useParams();
-  const username = params.username as string;
-  const { users, isLoading, error } = useFriendActions(username);
+const UsersPage: React.FC = () => {
+  const session = useSession();
+  const {
+    users,
+    isLoading,
+    errorUsers,
+    friendResponse,
+    errorFriendReq,
+    isSubmitting,
+    submitFriendRequest,
+  } = useFriendActions(session?.data?.user?.name as string);
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (errorUsers) {
+    return <div>Error: {errorUsers.message}</div>;
+  }
+
   return (
     <ul
       role="list"
@@ -44,7 +61,10 @@ export default function FriendsPage() {
             <div>
               <div className="-mt-px flex divide-x divide-gray-200">
                 <div className="flex w-0 flex-1">
-                  <a className="relative -mr-px inline-flex w-0 flex-1 items-center justify-center gap-x-3 rounded-bl-lg border border-transparent py-4 text-sm font-semibold text-gray-900">
+                  <a
+                    onClick={() => submitFriendRequest(user.username)}
+                    className="relative -mr-px inline-flex w-0 flex-1 items-center justify-center gap-x-3 rounded-bl-lg border border-transparent py-4 text-sm font-semibold text-gray-900"
+                  >
                     <UserRoundPlus
                       aria-hidden="true"
                       className="size-5 text-gray-400"
@@ -68,4 +88,6 @@ export default function FriendsPage() {
       )}
     </ul>
   );
-}
+};
+
+export default UsersPage;

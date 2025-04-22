@@ -19,7 +19,7 @@ const NavBar: React.FC = () => {
               Home
             </a>
             <a
-              href={`/${session.data?.user?.name}/friends`}
+              href={`/${session.data?.user?.name}/social`}
               className="text-white hover:text-blue-300"
             >
               Social
