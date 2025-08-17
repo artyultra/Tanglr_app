@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { friendsService } from "@/app/api/friends";
-import { UserTypes } from "@/app/api";
+import { friendsService, UserTypes } from "@/services";
 
 export function useFriendList(username: string) {
   const [friendList, setFriendList] = useState<UserTypes.GetFriendsListResp>(

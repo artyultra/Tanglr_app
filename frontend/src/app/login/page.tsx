@@ -5,7 +5,7 @@ import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { AuthTypes } from "../api";
+import { AuthTypes } from "@/services";
 
 export default function Login() {
   const router = useRouter();
@@ -120,7 +120,7 @@ export default function Login() {
 
           <div className="mt-4 text-center">
             <p className="text-gray-600">
-              Don't have an account?{" "}
+              Don&apos;t have an account?{" "}
               <Link href="/register" className="text-blue-600 hover:underline">
                 Register here
               </Link>

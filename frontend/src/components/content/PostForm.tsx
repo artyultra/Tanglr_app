@@ -2,7 +2,7 @@
 
 "use client";
 
-import styles from "./PostForm.module.css"
+import styles from "./PostForm.module.css";
 
 
 type PostFormProps = {
@@ -57,6 +57,6 @@ const PostForm: React.FC<PostFormProps> = ({
       </div>
     </div>
   );
-});
+};
 
 export default PostForm;

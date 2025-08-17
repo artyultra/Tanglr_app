@@ -4,12 +4,12 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { userService } from "../api";
-import { RegisterRequest } from "../api/types/auth";
+import { userService } from "@/services";
+import { AuthTypes } from "@/services";
 
 export default function RegisterPage() {
   const router = useRouter();
-  const [formData, setFormData] = useState<RegisterRequest>({
+  const [formData, setFormData] = useState<AuthTypes.RegisterRequest>({
     username: "",
     email: "",
     password: "",
@@ -20,7 +20,7 @@ export default function RegisterPage() {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData((prev: RegisterRequest) => ({
+    setFormData((prev: AuthTypes.RegisterRequest) => ({
       ...prev,
       [name]: value,
     }));
@@ -42,9 +42,9 @@ export default function RegisterPage() {
       await userService.register(formData);
       // Redirect to login page after successful registration
       router.push("/login?registered=true");
-    } catch (error: any) {
+    } catch (error) {
       const errorMessage =
-        error.response?.data?.error || "Registration failed. Please try again.";
+        (error as Error & { response?: { data?: { error?: string } } }).response?.data?.error || "Registration failed. Please try again.";
       setError(errorMessage);
       console.error("Registration error:", error);
     } finally {

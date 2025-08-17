@@ -1,7 +1,7 @@
 // File: components/profile/ProfileCard.tsx
 "use client";
 
-import { UserTypes } from "@/app/api";
+import { UserTypes } from "@/services";
 
 interface Props {
   user?: UserTypes.GetUserProfileResponse;
@@ -33,6 +33,7 @@ const ProfileCard: React.FC<Props> = ({ user, isLoadingUser, errorUser }) => {
     <div className="bg-gray-800 border-2 border-gray-400 rounded-4xl p-4 mb-4">
       <div className="text-center mb-3">
         <div className="w-32 h-32 bg-gray-300 mx-auto mb-2 border-2 border-gray-500">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={`${user?.avatar_url}`}
             alt="Profile"

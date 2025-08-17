@@ -51,6 +51,7 @@ const FriendSpace: React.FC = () => {
           {friendList.map((friend) => (
             <li key={friend.friend_username} className="py-2">
               <div className="ml-4 flex gap-3  p-2 rounded transition-colors">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={friend.friend_avatar_url}
                   alt={`${friend.friend_username}'s avatar`}

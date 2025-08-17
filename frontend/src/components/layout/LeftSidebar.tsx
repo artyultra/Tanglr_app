@@ -3,7 +3,7 @@
 import FriendSpace from "../profile/FriendSpace";
 import MusicPlayer from "../profile/MusicPlayer";
 import ProfileCard from "../profile/ProfileCard";
-import { UserTypes } from "@/app/api";
+import { UserTypes } from "@/services";
 
 interface Props {
   user?: UserTypes.GetUserProfileResponse;

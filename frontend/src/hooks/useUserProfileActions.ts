@@ -1,5 +1,4 @@
-import { userService } from "@/app/api";
-import { UserTypes } from "@/app/api";
+import { userService, UserTypes } from "@/services";
 import { useEffect, useState } from "react";
 
 export function useUserProfileActions(username: string) {
@@ -23,6 +22,7 @@ export function useUserProfileActions(username: string) {
   useEffect(() => {
     if (!username) return;
     fetchUserProfile();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [username]);
 
   return {

@@ -1,6 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
-import { friendsService } from "@/app/api/friends";
-import { UserTypes } from "@/app/api";
+import { friendsService, UserTypes } from "@/services";
 import { useSession } from "next-auth/react";
 
 export function useFriendActions(username: string) {
@@ -8,7 +7,7 @@ export function useFriendActions(username: string) {
   const [users, setUsers] = useState<UserTypes.GetUserProfileListResponse>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [errorUsers, setErrorUsers] = useState<Error | null>(null);
-  const { data: session, status } = useSession();
+  const { status } = useSession();
 
   const fetchUsers = useCallback(async () => {
     if (status !== "authenticated") {

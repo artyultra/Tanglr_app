@@ -2,7 +2,7 @@
 
 "use client";
 
-import { PostTypes } from "@/app/api";
+import { PostTypes } from "@/services";
 import {
   Heart,
   MessageCircle,
@@ -106,6 +106,7 @@ const UserPosts: React.FC<UserPostsProps> = ({
                     {/* Avatar */}
                     <div className="flex-shrink-0">
                       {post.username ? (
+                        // eslint-disable-next-line @next/next/no-img-element
                         <img
                           className="h-10 w-10 rounded-full object-cover"
                           src={post.user_avatar_url}

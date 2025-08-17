@@ -1,5 +1,5 @@
-import api from "./client";
-import { AuthTypes, PostTypes, UserTypes } from "./index";
+import api from "@/lib/axios-client";
+import { AuthTypes, PostTypes, UserTypes } from "@/types/api";
 
 export const userService = {
   async login(

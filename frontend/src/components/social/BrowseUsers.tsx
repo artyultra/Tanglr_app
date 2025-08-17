@@ -1,6 +1,6 @@
 "use client";
 import { useFriendActions } from "@/hooks/useFriendReqActions";
-import { MessageSquareIcon, PhoneIcon, UserRoundPlus } from "lucide-react";
+import { MessageSquareIcon, UserRoundPlus } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
@@ -35,6 +35,7 @@ const BrowseUsers: React.FC = () => {
             className="col-span-1 flex flex-col divide-y divide-gray-600 rounded-lg bg-gray-800 text-center shadow-sm border-2 border-gray-400"
           >
             <div className="flex flex-1 flex-col p-4">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 alt=""
                 src={user.avatar_url}

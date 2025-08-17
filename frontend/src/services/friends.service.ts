@@ -1,5 +1,5 @@
-import api from "./client";
-import { UserTypes } from "./index";
+import api from "@/lib/axios-client";
+import { UserTypes } from "@/types/api";
 
 export const friendsService = {
   async getNonFriendUsers(

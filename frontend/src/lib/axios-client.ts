@@ -27,7 +27,7 @@ const api: AxiosInstance = axios.create({
 let isRefreshing = false;
 let failedQueue: Array<{
   resolve: (value: unknown) => void;
-  reject: (reason?: any) => void;
+  reject: (reason?: unknown) => void;
   config: InternalAxiosRequestConfig;
 }> = [];
 
@@ -56,7 +56,7 @@ api.interceptors.request.use(
     }
     return config;
   },
-  (error: any) => {
+  (error: unknown) => {
     return Promise.reject(error);
   },
 );

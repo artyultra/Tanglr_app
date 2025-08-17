@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { userService } from "@/app/api";
-import { GetPostsResponse } from "@/app/api/types";
+import { userService } from "@/services";
+import { PostTypes } from "@/types/api";
 
 export function useUserPostActions(username: string) {
   const [postText, setPostText] = useState<string>("");
@@ -29,7 +29,7 @@ export function useUserPostActions(username: string) {
     }
   };
 
-  const [posts, setPosts] = useState<GetPostsResponse>([]);
+  const [posts, setPosts] = useState<PostTypes.GetPostsResponse>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<Error | null>(null);
 
@@ -49,7 +49,8 @@ export function useUserPostActions(username: string) {
 
   useEffect(() => {
     fetchPosts();
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [username]);
 
   return {
     postText,
