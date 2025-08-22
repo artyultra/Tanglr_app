@@ -1,0 +1,100 @@
+/* Container styles */
+.container {
+  margin-top: auto;
+  position: relative;
+}
+
+.buttonWrapper {
+  position: relative;
+}
+
+/* Profile trigger button */
+.triggerButton {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.triggerButton:hover {
+  transform: scale(1.05);
+  filter: brightness(1.1);
+}
+
+.triggerButton:active {
+  transform: scale(0.98);
+}
+
+.profileImage {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* Speech bubble popup menu */
+.popupMenu {
+  position: fixed;
+  background: var(--surface0);
+  border: 1px solid var(--overlay0);
+  border-radius: 1rem;
+  box-shadow:
+    0 10px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  padding: 0.75rem 1rem;
+  min-width: 200px;
+  z-index: 9999;
+  animation: fadeInUp 0.2s ease-out;
+}
+
+/* Menu content - horizontal layout */
+.menuContent {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  justify-content: space-around;
+}
+
+/* Speech bubble arrow/tail */
+.menuArrow {
+  position: absolute;
+  bottom: -10px;
+  left: 20%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-top: 8px solid var(--surface0);
+  filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.05));
+}
+
+.menuArrow::before {
+  content: "";
+  position: absolute;
+  bottom: 1px;
+  left: -9px;
+  width: 0;
+  height: 0;
+  border-left: 9px solid transparent;
+  border-right: 9px solid transparent;
+  border-top: 9px solid var(--overlay0);
+  z-index: -1;
+}
+
+/* Animation */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}

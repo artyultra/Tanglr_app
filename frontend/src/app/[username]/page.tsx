@@ -1,63 +1,50 @@
-// src/app/[username]/page.tsx
-"use client";
-import { useSession } from "next-auth/react";
-import { useParams, useRouter } from "next/navigation";
-import { useEffect } from "react";
-import NavBar from "@/components/layout/NavBar";
-import Footer from "@/components/layout/Footer";
-import LeftSidebar from "@/components/layout/LeftSidebar";
-import MainContent from "@/components/layout/MainContent";
-import { useUserProfileActions } from "@/hooks/useUserProfileActions";
+import { auth } from "@/lib/auth/auth";
+import { redirect } from "next/navigation";
+import { notFound } from "next/navigation";
+import { usersService } from "@/services/users";
+import styles from "./page.module.css";
+import CurrentUserPage from "./CurrentUserPage/CurrentUserPage";
+import PublicPage from "./PublicPage";
 
-export default function Dashboard() {
-  const { status } = useSession();
-  const router = useRouter();
+interface UserProfilePageProps {
+  params: {
+    username: string;
+  };
+}
 
-  const params = useParams();
-  const username = params.username as string;
-  const { user, isLoadingUser, errorUser } = useUserProfileActions(username);
+export default async function UserProfilePage({
+  params,
+}: UserProfilePageProps) {
+  const session = await auth();
 
-  useEffect(() => {
-    if (status === "unauthenticated") {
-      router.push("/login");
-    }
-  }, [status, router]);
-
-  if (status === "loading") {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-blue-800">
-        <div className="text-center">
-          <div className="w-16 h-16 border-4 border-pink-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
-          <p className="mt-4 text-white font-bold">Loading...</p>
-        </div>
-      </div>
-    );
+  if (!session?.user || !session?.accessToken) {
+    redirect("/login");
   }
 
-  if (status === "unauthenticated") {
-    return null; // Will redirect in the useEffect
+  let userData;
+  try {
+    userData = await usersService.getUser(params.username, session.accessToken);
+    console.log(userData);
+  } catch (error) {
+    console.error("Error fetching user data:", error);
+    userData = null;
   }
+
+  if (!userData || !userData.exists) {
+    notFound();
+  }
+
+  const isOwnProfile = session.user.username === params.username;
+
+  console.log(userData);
 
   return (
-    <div className="max-h-[100vh] bg-gradient-to-b from-gray-600 to-gray-900 font-sans flex flex-col">
-      {/* Top Navigation Bar - MySpace Style */}
-      <NavBar />
-
-      {/* Main Content */}
-      <div className="max-w-6xl h-[10%] mx-auto px-4 py-6 grid grid-cols-1 md:grid-cols-12 gap-6 flex-grow">
-        {/* Left Sidebar */}
-        <LeftSidebar
-          user={user}
-          isLoadingUser={isLoadingUser}
-          errorUser={errorUser}
-        />
-
-        {/* Main Content Area */}
-        <MainContent />
-      </div>
-
-      {/* Footer with sparkly effects */}
-      <Footer />
+    <div className={styles.container}>
+      {isOwnProfile ? (
+        <CurrentUserPage userData={userData} session={session} />
+      ) : (
+        <PublicPage userData={userData} />
+      )}
     </div>
   );
 }

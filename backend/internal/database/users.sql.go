@@ -7,29 +7,30 @@ package database
 
 import (
 	"context"
+	"database/sql"
 	"time"
 
 	"github.com/google/uuid"
 )
 
 const changeAvatarForuser = `-- name: ChangeAvatarForuser :exec
-UPDATE users SET avatar_url = $1 WHERE id = $2
+UPDATE user_preferences SET avatar_url = $1 WHERE user_id = $2
 `
 
 type ChangeAvatarForuserParams struct {
 	AvatarUrl string
-	ID        uuid.UUID
+	UserID    uuid.UUID
 }
 
 func (q *Queries) ChangeAvatarForuser(ctx context.Context, arg ChangeAvatarForuserParams) error {
-	_, err := q.db.ExecContext(ctx, changeAvatarForuser, arg.AvatarUrl, arg.ID)
+	_, err := q.db.ExecContext(ctx, changeAvatarForuser, arg.AvatarUrl, arg.UserID)
 	return err
 }
 
 const createUser = `-- name: CreateUser :one
-INSERT INTO users (id, username, email, hashed_password, created_at, updated_at, avatar_url)
-VALUES (gen_random_uuid(), $1, $2, $3, $4, $5, $6)
-RETURNING id, username, email, hashed_password, created_at, updated_at, avatar_url
+INSERT INTO users (id, username, email, hashed_password, created_at, updated_at)
+VALUES (gen_random_uuid(), $1, $2, $3, $4, $5)
+RETURNING id, username, email, hashed_password, created_at, updated_at
 `
 
 type CreateUserParams struct {
@@ -38,7 +39,6 @@ type CreateUserParams struct {
 	HashedPassword string
 	CreatedAt      time.Time
 	UpdatedAt      time.Time
-	AvatarUrl      string
 }
 
 func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, error) {
@@ -48,7 +48,6 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 		arg.HashedPassword,
 		arg.CreatedAt,
 		arg.UpdatedAt,
-		arg.AvatarUrl,
 	)
 	var i User
 	err := row.Scan(
@@ -58,7 +57,6 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 		&i.HashedPassword,
 		&i.CreatedAt,
 		&i.UpdatedAt,
-		&i.AvatarUrl,
 	)
 	return i, err
 }
@@ -73,8 +71,19 @@ func (q *Queries) DeleteUser(ctx context.Context, id uuid.UUID) error {
 }
 
 const getNonFriendUsers = `-- name: GetNonFriendUsers :many
-SELECT id, username, email, hashed_password, created_at, updated_at, avatar_url FROM users u 
-WHERE u.id != $1 
+SELECT
+    u.id as user_id,
+    u.username,
+    u.email,
+    u.hashed_password,
+    u.created_at as user_created_at,
+    u.updated_at as user_updated_at,
+    up.avatar_url
+FROM
+    users u
+LEFT JOIN
+    user_preferences up ON up.user_id = u.id
+WHERE u.id != $1
 AND NOT EXISTS (
     SELECT 1 FROM friends f 
     WHERE (f.user_id = $1 AND f.friend_id = u.id)
@@ -82,22 +91,32 @@ AND NOT EXISTS (
 )
 `
 
-func (q *Queries) GetNonFriendUsers(ctx context.Context, id uuid.UUID) ([]User, error) {
+type GetNonFriendUsersRow struct {
+	UserID         uuid.UUID
+	Username       string
+	Email          string
+	HashedPassword string
+	UserCreatedAt  time.Time
+	UserUpdatedAt  time.Time
+	AvatarUrl      sql.NullString
+}
+
+func (q *Queries) GetNonFriendUsers(ctx context.Context, id uuid.UUID) ([]GetNonFriendUsersRow, error) {
 	rows, err := q.db.QueryContext(ctx, getNonFriendUsers, id)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []User
+	var items []GetNonFriendUsersRow
 	for rows.Next() {
-		var i User
+		var i GetNonFriendUsersRow
 		if err := rows.Scan(
-			&i.ID,
+			&i.UserID,
 			&i.Username,
 			&i.Email,
 			&i.HashedPassword,
-			&i.CreatedAt,
-			&i.UpdatedAt,
+			&i.UserCreatedAt,
+			&i.UserUpdatedAt,
 			&i.AvatarUrl,
 		); err != nil {
 			return nil, err
@@ -113,27 +132,8 @@ func (q *Queries) GetNonFriendUsers(ctx context.Context, id uuid.UUID) ([]User, 
 	return items, nil
 }
 
-const getUser = `-- name: GetUser :one
-SELECT id, username, email, hashed_password, created_at, updated_at, avatar_url FROM users WHERE id = $1
-`
-
-func (q *Queries) GetUser(ctx context.Context, id uuid.UUID) (User, error) {
-	row := q.db.QueryRowContext(ctx, getUser, id)
-	var i User
-	err := row.Scan(
-		&i.ID,
-		&i.Username,
-		&i.Email,
-		&i.HashedPassword,
-		&i.CreatedAt,
-		&i.UpdatedAt,
-		&i.AvatarUrl,
-	)
-	return i, err
-}
-
 const getUserByEmail = `-- name: GetUserByEmail :one
-SELECT id, username, email, hashed_password, created_at, updated_at, avatar_url FROM users WHERE email = $1
+SELECT id, username, email, hashed_password, created_at, updated_at FROM users WHERE email = $1
 `
 
 func (q *Queries) GetUserByEmail(ctx context.Context, email string) (User, error) {
@@ -146,26 +146,118 @@ func (q *Queries) GetUserByEmail(ctx context.Context, email string) (User, error
 		&i.HashedPassword,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+	)
+	return i, err
+}
+
+const getUserById = `-- name: GetUserById :one
+SELECT 
+    u.id as user_id,
+    u.username,
+    u.email,
+    u.hashed_password,
+    u.created_at as user_created_at,
+    u.updated_at as user_updated_at,
+    up.id as preferences_id,
+    up.avatar_url,
+    up.cover_url,
+    up.dark_mode,
+    up.created_at as preferences_created_at,
+    up.updated_at as preferences_updated_at
+FROM 
+    users u
+LEFT JOIN
+    user_preferences up ON up.user_id = u.id
+WHERE u.id = $1
+`
+
+type GetUserByIdRow struct {
+	UserID               uuid.UUID
+	Username             string
+	Email                string
+	HashedPassword       string
+	UserCreatedAt        time.Time
+	UserUpdatedAt        time.Time
+	PreferencesID        uuid.NullUUID
+	AvatarUrl            sql.NullString
+	CoverUrl             sql.NullString
+	DarkMode             sql.NullBool
+	PreferencesCreatedAt sql.NullTime
+	PreferencesUpdatedAt sql.NullTime
+}
+
+func (q *Queries) GetUserById(ctx context.Context, id uuid.UUID) (GetUserByIdRow, error) {
+	row := q.db.QueryRowContext(ctx, getUserById, id)
+	var i GetUserByIdRow
+	err := row.Scan(
+		&i.UserID,
+		&i.Username,
+		&i.Email,
+		&i.HashedPassword,
+		&i.UserCreatedAt,
+		&i.UserUpdatedAt,
+		&i.PreferencesID,
 		&i.AvatarUrl,
+		&i.CoverUrl,
+		&i.DarkMode,
+		&i.PreferencesCreatedAt,
+		&i.PreferencesUpdatedAt,
 	)
 	return i, err
 }
 
 const getUserByUsername = `-- name: GetUserByUsername :one
-SELECT id, username, email, hashed_password, created_at, updated_at, avatar_url FROM users WHERE username = $1
+SELECT 
+    u.id as user_id,
+    u.username,
+    u.email,
+    u.hashed_password,
+    u.created_at as user_created_at,
+    u.updated_at as user_updated_at,
+    up.id as preferences_id,
+    up.avatar_url,
+    up.cover_url,
+    up.dark_mode,
+    up.created_at as preferences_created_at,
+    up.updated_at as preferences_updated_at
+FROM 
+    users u
+LEFT JOIN
+    user_preferences up ON up.user_id = u.id
+WHERE u.username = $1
 `
 
-func (q *Queries) GetUserByUsername(ctx context.Context, username string) (User, error) {
+type GetUserByUsernameRow struct {
+	UserID               uuid.UUID
+	Username             string
+	Email                string
+	HashedPassword       string
+	UserCreatedAt        time.Time
+	UserUpdatedAt        time.Time
+	PreferencesID        uuid.NullUUID
+	AvatarUrl            sql.NullString
+	CoverUrl             sql.NullString
+	DarkMode             sql.NullBool
+	PreferencesCreatedAt sql.NullTime
+	PreferencesUpdatedAt sql.NullTime
+}
+
+func (q *Queries) GetUserByUsername(ctx context.Context, username string) (GetUserByUsernameRow, error) {
 	row := q.db.QueryRowContext(ctx, getUserByUsername, username)
-	var i User
+	var i GetUserByUsernameRow
 	err := row.Scan(
-		&i.ID,
+		&i.UserID,
 		&i.Username,
 		&i.Email,
 		&i.HashedPassword,
-		&i.CreatedAt,
-		&i.UpdatedAt,
+		&i.UserCreatedAt,
+		&i.UserUpdatedAt,
+		&i.PreferencesID,
 		&i.AvatarUrl,
+		&i.CoverUrl,
+		&i.DarkMode,
+		&i.PreferencesCreatedAt,
+		&i.PreferencesUpdatedAt,
 	)
 	return i, err
 }

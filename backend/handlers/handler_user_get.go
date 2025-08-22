@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"database/sql"
 	"net/http"
 
 	"github.com/artyultra/tanglr/handlers/helpers"
@@ -29,17 +30,24 @@ func (cfg *Config) HandlerGetUser(w http.ResponseWriter, r *http.Request) {
 
 	dbUser, err := cfg.DB.GetUserByUsername(r.Context(), username)
 	if err != nil {
+		if err == sql.ErrNoRows {
+			helpers.RespondWithJSON(w, http.StatusOK, User{Exists: false})
+			return
+		}
 		helpers.RespondWithError(w, http.StatusInternalServerError, "Couldn't get user", err)
 		return
 	}
 
 	user := User{
-		ID:        dbUser.ID,
+		ID:        dbUser.UserID,
 		Email:     dbUser.Email,
 		Username:  dbUser.Username,
-		CreatedAt: dbUser.CreatedAt,
-		UpdatedAt: dbUser.UpdatedAt,
-		AvatarURL: dbUser.AvatarUrl,
+		CreatedAt: dbUser.UserCreatedAt,
+		UpdatedAt: dbUser.UserCreatedAt,
+		AvatarURL: dbUser.AvatarUrl.String,
+		CoverURL:  dbUser.CoverUrl.String,
+		DarkMode:  dbUser.DarkMode.Bool,
+		Exists:    true,
 	}
 
 	helpers.RespondWithJSON(w, http.StatusOK, user)

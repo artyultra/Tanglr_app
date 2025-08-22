@@ -1,6 +1,7 @@
 package main
 
 import (
+	"database/sql"
 	"log"
 	"net/http"
 	"os"
@@ -11,11 +12,12 @@ import (
 	"github.com/go-chi/chi"
 	"github.com/go-chi/cors"
 	"github.com/joho/godotenv"
-	_ "github.com/tursodatabase/libsql-client-go/libsql"
+	_ "github.com/lib/pq"
 )
 
 type apiConfig struct {
 	db        *database.Queries
+	dbConn    *sql.DB
 	jwtSecret string
 }
 
@@ -32,13 +34,14 @@ func main() {
 
 	apiCfg := apiConfig{}
 
-	dbQueries, cleanup, err := setupDBConn()
+	dbQueries, db, cleanup, err := setupDBConn()
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer cleanup()
 
 	apiCfg.db = dbQueries
+	apiCfg.dbConn = db
 
 	jwtsecret := os.Getenv("JWT_SECRET")
 	if jwtsecret == "" {
@@ -60,18 +63,19 @@ func main() {
 	v1Router := chi.NewRouter()
 
 	if apiCfg.db != nil {
-		handlerCfg := handlers.NewConfig(apiCfg.db, apiCfg.jwtSecret)
+		handlerCfg := handlers.NewConfig(apiCfg.db, apiCfg.dbConn, apiCfg.jwtSecret)
 
 		v1Router.Post("/login", handlerCfg.HandlerLogin)
 
 		v1Router.Post("/users", handlerCfg.HandlerCreateUser)
 		v1Router.Get("/users/{username}", handlerCfg.HandlerGetUser)
-		v1Router.Get("/users/{username}/friends", handlerCfg.HandlerGetNonFriends)
-		v1Router.Get("/users/{username}/friendslist", handlerCfg.HandlerGetFriends)
-		v1Router.Post("/users/{username}/friends/{friendUsername}", handlerCfg.HandlerAddFriend)
+		// v1Router.Get("/users/{username}/friends", handlerCfg.HandlerGetNonFriends)
+		// v1Router.Get("/users/{username}/friendslist", handlerCfg.HandlerGetFriends)
+		// v1Router.Post("/users/{username}/friends/{friendUsername}", handlerCfg.HandlerAddFriend)
 
 		v1Router.Post("/posts", handlerCfg.HandlerCreatePost)
-		v1Router.Get("/posts/{username}", handlerCfg.HandlerGetAllPosts)
+		v1Router.Get("/posts/{username}", handlerCfg.HandlerGetAllUserPosts)
+		v1Router.Get("/posts", handlerCfg.HandlerGetAllPosts)
 
 		v1Router.Post("/reset", handlerCfg.HandlerResetDatabases)
 

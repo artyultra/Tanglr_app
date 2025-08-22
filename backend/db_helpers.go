@@ -11,15 +11,15 @@ import (
 	_ "github.com/lib/pq"
 )
 
-func setupDBConn() (*database.Queries, func(), error) {
+func setupDBConn() (*database.Queries, *sql.DB, func(), error) {
 	databaseURL := os.Getenv("DATABASE_URL")
 	if databaseURL == "" {
-		return nil, nil, fmt.Errorf("missing DATABASE_URL environment variable")
+		return nil, nil, nil, fmt.Errorf("missing DATABASE_URL environment variable")
 	}
 
 	db, err := sql.Open("postgres", databaseURL)
 	if err != nil {
-		return nil, nil, fmt.Errorf("failed to open database connection: %v", err)
+		return nil, nil, nil, fmt.Errorf("failed to open database connection: %v", err)
 	}
 
 	db.SetMaxOpenConns(25)
@@ -29,7 +29,7 @@ func setupDBConn() (*database.Queries, func(), error) {
 	err = db.Ping()
 	if err != nil {
 		db.Close()
-		return nil, nil, fmt.Errorf("failed to ping database: %v", err)
+		return nil, nil, nil, fmt.Errorf("failed to ping database: %v", err)
 	}
 
 	dbQueries := database.New(db)
@@ -41,5 +41,5 @@ func setupDBConn() (*database.Queries, func(), error) {
 		}
 	}
 
-	return dbQueries, cleanup, nil
+	return dbQueries, db, cleanup, nil
 }

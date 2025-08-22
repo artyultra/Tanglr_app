@@ -45,7 +45,7 @@ func (cfg *Config) HandlerLogin(w http.ResponseWriter, r *http.Request) {
 
 	jwtExpTime := time.Hour
 
-	tokenString, err := auth.MakeJWT(user.ID, user.Username, cfg.jwtSecret, jwtExpTime)
+	tokenString, err := auth.MakeJWT(user.UserID, user.Username, cfg.jwtSecret, jwtExpTime)
 	if err != nil {
 		helpers.RespondWithError(w, http.StatusInternalServerError, "Couldn't create token", err)
 		return
@@ -63,7 +63,7 @@ func (cfg *Config) HandlerLogin(w http.ResponseWriter, r *http.Request) {
 		Token:     refreshTokenString,
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
-		UserID:    user.ID,
+		UserID:    user.UserID,
 		ExpiresAt: refreshTokenExpTime,
 		RevokedAt: sql.NullTime{},
 	})
@@ -74,11 +74,15 @@ func (cfg *Config) HandlerLogin(w http.ResponseWriter, r *http.Request) {
 
 	helpers.RespondWithJSON(w, http.StatusOK, response{
 		User: User{
-			ID:        user.ID,
+			ID:        user.UserID,
 			Username:  user.Username,
 			Email:     user.Email,
-			CreatedAt: user.CreatedAt,
-			UpdatedAt: user.UpdatedAt,
+			CreatedAt: user.UserCreatedAt,
+			UpdatedAt: user.UserUpdatedAt,
+			AvatarURL: user.AvatarUrl.String,
+			CoverURL:  user.CoverUrl.String,
+			DarkMode:  user.DarkMode.Bool,
+			Exists:    true,
 		},
 		Token:        tokenString,
 		RefreshToken: refreshToken.Token,

@@ -21,12 +21,13 @@ type Friend struct {
 }
 
 type Post struct {
-	ID        uuid.UUID
-	Body      string
-	CreatedAt time.Time
-	UpdatedAt time.Time
-	UserID    uuid.UUID
-	Username  string
+	ID         uuid.UUID
+	Body       string
+	CreatedAt  time.Time
+	UpdatedAt  time.Time
+	UserID     uuid.UUID
+	IsDeleted  bool
+	Visibility string
 }
 
 type RefreshToken struct {
@@ -45,5 +46,14 @@ type User struct {
 	HashedPassword string
 	CreatedAt      time.Time
 	UpdatedAt      time.Time
-	AvatarUrl      string
+}
+
+type UserPreference struct {
+	ID        uuid.UUID
+	AvatarUrl string
+	CoverUrl  string
+	DarkMode  bool
+	UserID    uuid.UUID
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }

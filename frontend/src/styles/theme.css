@@ -1,0 +1,574 @@
+:root {
+  /* Catppuccin Latte (Light Mode) */
+  --rosewater: #dc8a78;
+  --rosewater-50: #faedea;
+  --rosewater-100: #f5dbd5;
+  --rosewater-200: #ebb7ab;
+  --rosewater-300: #e6a594;
+  --rosewater-400: #e19886;
+  --rosewater-500: #dc8a78;
+  --rosewater-600: #c67c6c;
+  --rosewater-700: #a5675a;
+  --rosewater-800: #845348;
+  --rosewater-900: #6e453c;
+
+  --flamingo: #dd7878;
+  --flamingo-50: #faeaea;
+  --flamingo-100: #f5d5d5;
+  --flamingo-200: #ebabab;
+  --flamingo-300: #e69494;
+  --flamingo-400: #e28686;
+  --flamingo-500: #dd7878;
+  --flamingo-600: #c76c6c;
+  --flamingo-700: #a65a5a;
+  --flamingo-800: #854848;
+  --flamingo-900: #6f3c3c;
+
+  --pink: #ea76cb;
+  --pink-50: #fdeaf8;
+  --pink-100: #fbd4f1;
+  --pink-200: #f7a9e3;
+  --pink-300: #f390d9;
+  --pink-400: #ef83d2;
+  --pink-500: #ea76cb;
+  --pink-600: #d36ab7;
+  --pink-700: #b05898;
+  --pink-800: #8d477a;
+  --pink-900: #753b66;
+
+  --mauve: #8839ef;
+  --mauve-50: #eee6fe;
+  --mauve-100: #ddcdfd;
+  --mauve-200: #bb9bfb;
+  --mauve-300: #a273fa;
+  --mauve-400: #9556f9;
+  --mauve-500: #8839ef;
+  --mauve-600: #7a33d7;
+  --mauve-700: #662bb3;
+  --mauve-800: #52228f;
+  --mauve-900: #441c77;
+
+  --red: #d20f39;
+  --red-50: #fbe4e9;
+  --red-100: #f8c9d2;
+  --red-200: #f192a5;
+  --red-300: #ea5b6e;
+  --red-400: #de3554;
+  --red-500: #d20f39;
+  --red-600: #bd0e33;
+  --red-700: #9e0b2b;
+  --red-800: #7e0922;
+  --red-900: #69081c;
+
+  --maroon: #e64553;
+  --maroon-50: #fde8ea;
+  --maroon-100: #fbd2d6;
+  --maroon-200: #f6a4ac;
+  --maroon-300: #f17781;
+  --maroon-400: #ec5e6a;
+  --maroon-500: #e64553;
+  --maroon-600: #cf3e4b;
+  --maroon-700: #ad343e;
+  --maroon-800: #8a2932;
+  --maroon-900: #73222a;
+
+  --peach: #fe640b;
+  --peach-50: #ffede3;
+  --peach-100: #ffdbc7;
+  --peach-200: #ffb78f;
+  --peach-300: #ff9357;
+  --peach-400: #ff7c31;
+  --peach-500: #fe640b;
+  --peach-600: #e55a0a;
+  --peach-700: #bf4b08;
+  --peach-800: #993c06;
+  --peach-900: #7f3205;
+
+  --yellow: #df8e1d;
+  --yellow-50: #fcf3e6;
+  --yellow-100: #f9e7cd;
+  --yellow-200: #f3d09b;
+  --yellow-300: #ecb869;
+  --yellow-400: #e6a343;
+  --yellow-500: #df8e1d;
+  --yellow-600: #c9801a;
+  --yellow-700: #a76b16;
+  --yellow-800: #865511;
+  --yellow-900: #70470e;
+
+  --green: #40a02b;
+  --green-50: #e9f5e7;
+  --green-100: #d3ebce;
+  --green-200: #a6d79d;
+  --green-300: #7ac36c;
+  --green-400: #5db04c;
+  --green-500: #40a02b;
+  --green-600: #3a9027;
+  --green-700: #307820;
+  --green-800: #26601a;
+  --green-900: #205016;
+
+  --sky: #04a5e5;
+  --sky-50: #e3f5fc;
+  --sky-100: #c7ebf9;
+  --sky-200: #8ed8f3;
+  --sky-300: #56c4ed;
+  --sky-400: #2db5e9;
+  --sky-500: #04a5e5;
+  --sky-600: #0495ce;
+  --sky-700: #037cac;
+  --sky-800: #026389;
+  --sky-900: #025272;
+
+  --sapphire: #209fb5;
+  --sapphire-50: #e6f4f7;
+  --sapphire-100: #cde9ef;
+  --sapphire-200: #9bd4df;
+  --sapphire-300: #69becf;
+  --sapphire-400: #45afc2;
+  --sapphire-500: #209fb5;
+  --sapphire-600: #1d8fa3;
+  --sapphire-700: #187788;
+  --sapphire-800: #135f6d;
+  --sapphire-900: #10505b;
+
+  --blue: #1e66f5;
+  --blue-50: #e6edfe;
+  --blue-100: #cddafd;
+  --blue-200: #9ab6fb;
+  --blue-300: #6891f9;
+  --blue-400: #4378f7;
+  --blue-500: #1e66f5;
+  --blue-600: #1b5cdd;
+  --blue-700: #174db8;
+  --blue-800: #123d93;
+  --blue-900: #0f337a;
+
+  --lavender: #7287fd;
+  --lavender-50: #edf0ff;
+  --lavender-100: #dce1fe;
+  --lavender-200: #b9c3fe;
+  --lavender-300: #96a5fd;
+  --lavender-400: #8496fd;
+  --lavender-500: #7287fd;
+  --lavender-600: #677ae4;
+  --lavender-700: #5665be;
+  --lavender-800: #445198;
+  --lavender-900: #39447f;
+
+  /* Neutral colors */
+  --text: #4c4f69;
+  --subtext1: #5c5f77;
+  --subtext0: #6c6f85;
+  --overlay2: #7c7f93;
+  --overlay1: #8c8fa1;
+  --overlay0: #9ca0b0;
+  --surface2: #acb0be;
+  --surface1: #bcc0cc;
+  --surface0: #ccd0da;
+  --base: #eff1f5;
+  --mantle: #e6e9ef;
+  --crust: #dce0e8;
+}
+
+[data-theme="dark"] {
+  /* Catppuccin Mocha (Dark Mode) */
+  --rosewater: #f5e0dc;
+  --rosewater-50: #2e2a29;
+  --rosewater-100: #4d4745;
+  --rosewater-200: #7b706e;
+  --rosewater-300: #a89a97;
+  --rosewater-400: #cfbdba;
+  --rosewater-500: #f5e0dc;
+  --rosewater-600: #f6e5e1;
+  --rosewater-700: #f8e9e6;
+  --rosewater-800: #f9eeeb;
+  --rosewater-900: #fbf2f0;
+
+  --flamingo: #f2cdcd;
+  --flamingo-50: #2e2727;
+  --flamingo-100: #4d4141;
+  --flamingo-200: #796767;
+  --flamingo-300: #a68d8d;
+  --flamingo-400: #ccadad;
+  --flamingo-500: #f2cdcd;
+  --flamingo-600: #f4d6d6;
+  --flamingo-700: #f6e0e0;
+  --flamingo-800: #f8ebeb;
+  --flamingo-900: #faf5f5;
+
+  --pink: #f5c2e7;
+  --pink-50: #2e252c;
+  --pink-100: #4d3d49;
+  --pink-200: #7b6174;
+  --pink-300: #a8859e;
+  --pink-400: #cfa4c3;
+  --pink-500: #f5c2e7;
+  --pink-600: #f6cceb;
+  --pink-700: #f8d6ef;
+  --pink-800: #fae0f3;
+  --pink-900: #fcebf7;
+
+  --mauve: #cba6f7;
+  --mauve-50: #27202f;
+  --mauve-100: #41354e;
+  --mauve-200: #66537c;
+  --mauve-300: #8a71a9;
+  --mauve-400: #ab8cd0;
+  --mauve-500: #cba6f7;
+  --mauve-600: #d3b3f8;
+  --mauve-700: #dbbff9;
+  --mauve-800: #e3ccfa;
+  --mauve-900: #ebd9fb;
+
+  --red: #f38ba8;
+  --red-50: #2e1a20;
+  --red-100: #4d2c35;
+  --red-200: #794654;
+  --red-300: #a65f73;
+  --red-400: #cc758e;
+  --red-500: #f38ba8;
+  --red-600: #f599b2;
+  --red-700: #f7a7bc;
+  --red-800: #f9b5c7;
+  --red-900: #fbc3d1;
+
+  --maroon: #eba0ac;
+  --maroon-50: #2d1e21;
+  --maroon-100: #4b3337;
+  --maroon-200: #765056;
+  --maroon-300: #a16d76;
+  --maroon-400: #c68791;
+  --maroon-500: #eba0ac;
+  --maroon-600: #eeacb6;
+  --maroon-700: #f0b8c1;
+  --maroon-800: #f3c4cb;
+  --maroon-900: #f5d0d6;
+
+  --peach: #fab387;
+  --peach-50: #2f221a;
+  --peach-100: #4f392b;
+  --peach-200: #7d5a44;
+  --peach-300: #ab7a5c;
+  --peach-400: #d39772;
+  --peach-500: #fab387;
+  --peach-600: #fbbd97;
+  --peach-700: #fcc7a7;
+  --peach-800: #fdd2b7;
+  --peach-900: #fedcc7;
+
+  --yellow: #f9e2af;
+  --yellow-50: #2f2b21;
+  --yellow-100: #4f4838;
+  --yellow-200: #7d7158;
+  --yellow-300: #aa9b77;
+  --yellow-400: #d2bf93;
+  --yellow-500: #f9e2af;
+  --yellow-600: #fae6bb;
+  --yellow-700: #fbeac7;
+  --yellow-800: #fced3;
+  --yellow-900: #fdf2df;
+
+  --yellow: #f9e2af;
+  --yellow-50: #2f2b21;
+  --yellow-100: #4f4838;
+  --yellow-200: #7d7158;
+  --yellow-300: #aa9b77;
+  --yellow-400: #d2bf93;
+  --yellow-500: #f9e2af;
+  --yellow-600: #fae6bb;
+  --yellow-700: #fbeac7;
+  --yellow-800: #fced3;
+  --yellow-900: #fdf2df;
+
+  --green: #a6e3a1;
+  --green-50: #202b1f;
+  --green-100: #354834;
+  --green-200: #537251;
+  --green-300: #719b6d;
+  --green-400: #8cbf87;
+  --green-500: #a6e3a1;
+  --green-600: #b3e6af;
+  --green-700: #c1eabd;
+  --green-800: #ceedcb;
+  --green-900: #dcf1d9;
+
+  --teal: #94e2d5;
+  --teal-50: #1c2b29;
+  --teal-100: #2f4844;
+  --teal-200: #4a716b;
+  --teal-300: #659b92;
+  --teal-400: #7dbfb4;
+  --teal-500: #94e2d5;
+  --teal-600: #a3e5da;
+  --teal-700: #b2e9e0;
+  --teal-800: #c1ede5;
+  --teal-900: #d1f0eb;
+
+  --sky: #89dceb;
+  --sky-50: #1a2a2d;
+  --sky-100: #2c464b;
+  --sky-200: #456e76;
+  --sky-300: #5e96a0;
+  --sky-400: #74b9c6;
+  --sky-500: #89dceb;
+  --sky-600: #98e0ee;
+  --sky-700: #a8e5f0;
+  --sky-800: #b7e9f3;
+  --sky-900: #c7eef5;
+
+  --sapphire: #74c7ec;
+  --sapphire-50: #16262d;
+  --sapphire-100: #253f4b;
+  --sapphire-200: #3a6476;
+  --sapphire-300: #4f88a1;
+  --sapphire-400: #62a8c7;
+  --sapphire-500: #74c7ec;
+  --sapphire-600: #85cfee;
+  --sapphire-700: #96d7f1;
+  --sapphire-800: #a6dff3;
+  --sapphire-900: #b7e7f6;
+
+  --blue: #89b4fa;
+  --blue-50: #1a222f;
+  --blue-100: #2c394f;
+  --blue-200: #455a7d;
+  --blue-300: #5e7aab;
+  --blue-400: #7497d3;
+  --blue-500: #89b4fa;
+  --blue-600: #98befb;
+  --blue-700: #a8c8fc;
+  --blue-800: #b7d3fd;
+  --blue-900: #c7ddfe;
+
+  --lavender: #b4befe;
+  --lavender-50: #222430;
+  --lavender-100: #393c50;
+  --lavender-200: #5a5f7f;
+  --lavender-300: #7b82ae;
+  --lavender-400: #97a0d6;
+  --lavender-500: #b4befe;
+  --lavender-600: #c0c9fe;
+  --lavender-700: #ccd3ff;
+  --lavender-800: #d8deff;
+  --lavender-900: #e4e8ff;
+
+  /* Neutral colors */
+  --text: #cdd6f4;
+  --subtext1: #bac2de;
+  --subtext0: #a6adc8;
+  --overlay2: #9399b2;
+  --overlay1: #7f849c;
+  --overlay0: #6c7086;
+  --surface2: #585b70;
+  --surface1: #45475a;
+  --surface0: #313244;
+  --base: #1e1e2e;
+  --mantle: #181825;
+  --crust: #11111b;
+}
+
+/* Background utilities */
+.bg-rosewater {
+  background-color: var(--rosewater);
+}
+.bg-flamingo {
+  background-color: var(--flamingo);
+}
+.bg-pink {
+  background-color: var(--pink);
+}
+.bg-mauve {
+  background-color: var(--mauve);
+}
+.bg-red {
+  background-color: var(--red);
+}
+.bg-maroon {
+  background-color: var(--maroon);
+}
+.bg-peach {
+  background-color: var(--peach);
+}
+.bg-yellow {
+  background-color: var(--yellow);
+}
+.bg-green {
+  background-color: var(--green);
+}
+.bg-teal {
+  background-color: var(--teal);
+}
+.bg-sky {
+  background-color: var(--sky);
+}
+.bg-sapphire {
+  background-color: var(--sapphire);
+}
+.bg-blue {
+  background-color: var(--blue);
+}
+.bg-lavender {
+  background-color: var(--lavender);
+}
+
+/* Text color utilities */
+.text-rosewater {
+  color: var(--rosewater);
+}
+.text-flamingo {
+  color: var(--flamingo);
+}
+.text-pink {
+  color: var(--pink);
+}
+.text-mauve {
+  color: var(--mauve);
+}
+.text-red {
+  color: var(--red);
+}
+.text-maroon {
+  color: var(--maroon);
+}
+.text-peach {
+  color: var(--peach);
+}
+.text-yellow {
+  color: var(--yellow);
+}
+.text-green {
+  color: var(--green);
+}
+.text-teal {
+  color: var(--teal);
+}
+.text-sky {
+  color: var(--sky);
+}
+.text-sapphire {
+  color: var(--sapphire);
+}
+.text-blue {
+  color: var(--blue);
+}
+.text-lavender {
+  color: var(--lavender);
+}
+
+/* Neutral background utilities */
+.bg-text {
+  background-color: var(--text);
+}
+.bg-subtext1 {
+  background-color: var(--subtext1);
+}
+.bg-subtext0 {
+  background-color: var(--subtext0);
+}
+.bg-overlay2 {
+  background-color: var(--overlay2);
+}
+.bg-overlay1 {
+  background-color: var(--overlay1);
+}
+.bg-overlay0 {
+  background-color: var(--overlay0);
+}
+.bg-surface2 {
+  background-color: var(--surface2);
+}
+.bg-surface1 {
+  background-color: var(--surface1);
+}
+.bg-surface0 {
+  background-color: var(--surface0);
+}
+.bg-base {
+  background-color: var(--base);
+}
+.bg-mantle {
+  background-color: var(--mantle);
+}
+.bg-crust {
+  background-color: var(--crust);
+}
+
+/* Semantic text utilities */
+.text-primary {
+  color: var(--text);
+}
+.text-secondary {
+  color: var(--subtext1);
+}
+.text-tertiary {
+  color: var(--subtext0);
+}
+
+/* Border utilities */
+.border-primary {
+  border-color: var(--overlay0);
+}
+.border-secondary {
+  border-color: var(--overlay1);
+}
+
+/* Gradient utilities - better approach using CSS custom properties */
+.bg-gradient-primary {
+  background: linear-gradient(135deg, var(--blue), var(--sapphire));
+}
+
+.bg-gradient-secondary {
+  background: linear-gradient(135deg, var(--pink), var(--mauve));
+}
+
+.bg-gradient-accent {
+  background: linear-gradient(135deg, var(--peach), var(--yellow));
+}
+
+.bg-gradient-surface {
+  background: linear-gradient(135deg, var(--surface0), var(--surface1));
+}
+
+/* Hover state utilities */
+.hover-bg-surface0:hover {
+  background-color: var(--surface0);
+}
+.hover-bg-surface1:hover {
+  background-color: var(--surface1);
+}
+.hover-bg-surface2:hover {
+  background-color: var(--surface2);
+}
+
+/* Focus states for accessibility */
+.focus-ring-primary:focus {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+
+.focus-ring-accent:focus {
+  outline: 2px solid var(--mauve);
+  outline-offset: 2px;
+}
+
+/* Shadow utilities using theme colors */
+.shadow-primary {
+  box-shadow:
+    0 4px 6px -1px rgba(var(--overlay0) / 0.1),
+    0 2px 4px -1px rgba(var(--overlay0) / 0.06);
+}
+
+.shadow-secondary {
+  box-shadow:
+    0 10px 15px -3px rgba(var(--overlay1) / 0.1),
+    0 4px 6px -2px rgba(var(--overlay1) / 0.05);
+}
+
+/* Animation for theme switching */
+* {
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease;
+}

@@ -1,0 +1,56 @@
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 2rem;
+  padding: 1rem;
+  width: 100%;
+  background-color: var(--base);
+  border-left: 1px solid var(--surface2);
+}
+
+.searchInputContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background-color: var(--base);
+  height: 3rem;
+  width: 100%;
+  border-radius: 5rem;
+  border: 2px solid var(--surface2);
+}
+
+.searchInputContainer svg {
+  width: 27;
+  height: 1.5rem;
+  stroke: var(--text);
+  flex-shrink: 0;
+}
+
+.searchInput {
+  background-color: transparent;
+  width: 100%;
+}
+
+.searchInput:focus {
+  outline: none;
+}
+
+.recommendations {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 1rem;
+  border: 2px solid var(--surface2);
+  padding: 1rem;
+  border-radius: 2rem;
+}
+
+@media (max-width: 930px) {
+  .sidebar {
+    display: none;
+  }
+}

@@ -7,6 +7,7 @@ package database
 
 import (
 	"context"
+	"database/sql"
 	"time"
 
 	"github.com/google/uuid"
@@ -15,7 +16,6 @@ import (
 const createFriend = `-- name: CreateFriend :exec
 INSERT INTO friends (user_id, friend_id, initiator_id)
 values ($1, $2, $3)
-returning user_id, friend_id, status, initiator_id, created_at, updated_at
 `
 
 type CreateFriendParams struct {
@@ -43,12 +43,12 @@ func (q *Queries) DeleteFriend(ctx context.Context, arg DeleteFriendParams) erro
 	return err
 }
 
-const getFriendRequests = `-- name: GetFriendRequests :many
+const getAllPendingRequests = `-- name: GetAllPendingRequests :many
 SELECT user_id, friend_id, status, initiator_id, created_at, updated_at FROM friends WHERE status = 'pending'
 `
 
-func (q *Queries) GetFriendRequests(ctx context.Context) ([]Friend, error) {
-	rows, err := q.db.QueryContext(ctx, getFriendRequests)
+func (q *Queries) GetAllPendingRequests(ctx context.Context) ([]Friend, error) {
+	rows, err := q.db.QueryContext(ctx, getAllPendingRequests)
 	if err != nil {
 		return nil, err
 	}
@@ -77,12 +77,12 @@ func (q *Queries) GetFriendRequests(ctx context.Context) ([]Friend, error) {
 	return items, nil
 }
 
-const getFriendsList = `-- name: GetFriendsList :many
+const getFriendRequests = `-- name: GetFriendRequests :many
 SELECT 
     f.user_id, f.friend_id, f.status, f.initiator_id, f.created_at, f.updated_at,
     u.username as friend_username,
-    u.avatar_url as friend_avatar_url
-    -- Add any other user fields you need
+    up.avatar_url as friend_avatar_url
+    -- future fields
 FROM 
     friends f
 JOIN 
@@ -92,8 +92,74 @@ JOIN
             ELSE f.user_id
         END = u.id
     )
+LEFT JOIN
+    user_preferences up ON up.user_id = u.id
 WHERE 
-    f.status = 'pending' AND (f.user_id = $1 OR f.friend_id = $1)
+    f.status = 'pending' AND (f.user_id = $1 OR f.friend_id = $1) AND initiator_id != $1
+`
+
+type GetFriendRequestsRow struct {
+	UserID          uuid.UUID
+	FriendID        uuid.UUID
+	Status          string
+	InitiatorID     uuid.UUID
+	CreatedAt       time.Time
+	UpdatedAt       time.Time
+	FriendUsername  string
+	FriendAvatarUrl sql.NullString
+}
+
+func (q *Queries) GetFriendRequests(ctx context.Context, userID uuid.UUID) ([]GetFriendRequestsRow, error) {
+	rows, err := q.db.QueryContext(ctx, getFriendRequests, userID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []GetFriendRequestsRow
+	for rows.Next() {
+		var i GetFriendRequestsRow
+		if err := rows.Scan(
+			&i.UserID,
+			&i.FriendID,
+			&i.Status,
+			&i.InitiatorID,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.FriendUsername,
+			&i.FriendAvatarUrl,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const getFriendsList = `-- name: GetFriendsList :many
+SELECT 
+    f.user_id, f.friend_id, f.status, f.initiator_id, f.created_at, f.updated_at,
+    u.username as friend_username,
+    up.avatar_url as friend_avatar_url
+    -- future fields
+FROM 
+    friends f
+JOIN 
+    users u ON (
+        CASE 
+            WHEN f.user_id = $1 THEN f.friend_id
+            ELSE f.user_id
+        END = u.id
+    )
+LEFT JOIN
+    user_preferences up ON up.user_id = u.id
+WHERE 
+    f.status = 'accepted' AND (f.user_id = $1 OR f.friend_id = $1)
 `
 
 type GetFriendsListRow struct {
@@ -104,7 +170,7 @@ type GetFriendsListRow struct {
 	CreatedAt       time.Time
 	UpdatedAt       time.Time
 	FriendUsername  string
-	FriendAvatarUrl string
+	FriendAvatarUrl sql.NullString
 }
 
 func (q *Queries) GetFriendsList(ctx context.Context, userID uuid.UUID) ([]GetFriendsListRow, error) {

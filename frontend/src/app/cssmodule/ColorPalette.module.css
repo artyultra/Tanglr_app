@@ -1,0 +1,325 @@
+.container {
+  padding: 2rem;
+  min-height: 100vh;
+  background-color: var(--base);
+  color: var(--text);
+  transition: all 0.3s ease;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 3rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid var(--surface0);
+}
+
+.titleWrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex: 1;
+}
+
+.title {
+  font-size: 2.5rem;
+  font-weight: bold;
+  background: linear-gradient(135deg, var(--pink), var(--mauve));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin: 0;
+}
+
+.subtitle {
+  font-size: 1rem;
+  color: var(--subtext1);
+  margin-top: 0.5rem;
+}
+
+.toggleButton {
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  background-color: var(--surface1);
+  color: var(--text);
+  border: 2px solid var(--surface2);
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.toggleButton:hover {
+  background-color: var(--surface2);
+  transform: translateY(-2px);
+}
+
+.toggleIcon {
+  font-size: 1.25rem;
+}
+
+.section {
+  margin-bottom: 3rem;
+}
+
+.sectionTitle {
+  font-size: 1.75rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  color: var(--text);
+}
+
+.colorGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.5rem;
+}
+
+.colorCard {
+  border-radius: 0.75rem;
+  overflow: hidden;
+  background-color: var(--surface0);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.colorCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
+}
+
+.colorHeader {
+  padding: 1rem;
+  background-color: var(--surface1);
+  border-bottom: 1px solid var(--surface2);
+}
+
+.colorName {
+  font-weight: bold;
+  font-size: 1.1rem;
+  color: var(--text);
+  margin-bottom: 0.25rem;
+}
+
+.colorVarName {
+  font-size: 0.85rem;
+  color: var(--subtext0);
+  font-family: monospace;
+}
+
+.shadesContainer {
+  padding: 0.75rem;
+}
+
+.shadeRow {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
+  border-radius: 0.25rem;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.shadeRow:hover {
+  transform: translateX(4px);
+}
+
+.shadeSwatch {
+  width: 60px;
+  height: 32px;
+  border-radius: 0.25rem 0 0 0.25rem;
+}
+
+.shadeSwatchPrimary {
+  border: 2px solid var(--surface2);
+}
+
+.shadeLabel {
+  flex: 1;
+  padding: 0 0.75rem;
+  font-size: 0.85rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--surface1);
+  height: 32px;
+}
+
+.shadeNumber {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.shadeVar {
+  font-size: 0.75rem;
+  color: var(--subtext0);
+  font-family: monospace;
+}
+
+.neutralSwatch {
+  width: 100%;
+  height: 60px;
+  border-radius: 0.25rem;
+}
+
+.neutralSwatchBordered {
+  border: 1px solid var(--surface2);
+}
+
+.copiedNotice {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  padding: 0.75rem 1.5rem;
+  background-color: var(--green);
+  color: var(--base);
+  border-radius: 0.5rem;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.buttonShowcase {
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+  margin-bottom: 2rem;
+}
+
+.buttonGroup {
+  flex: 1 1 300px;
+}
+
+.buttonGroupTitle {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: var(--text);
+}
+
+.buttonRow {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.button {
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  border: none;
+}
+
+.primaryButton {
+  background-color: var(--blue);
+  color: var(--base);
+}
+
+.primaryButton:hover {
+  background-color: var(--blue-600);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.secondaryButton {
+  background-color: transparent;
+  color: var(--blue);
+  border: 2px solid var(--blue);
+}
+
+.secondaryButton:hover {
+  background-color: var(--surface0);
+  transform: translateY(-2px);
+}
+
+.tertiaryButton {
+  background-color: transparent;
+  color: var(--text);
+  text-decoration: underline;
+  text-decoration-color: var(--subtext0);
+}
+
+.tertiaryButton:hover {
+  background-color: var(--surface0);
+  text-decoration-color: var(--subtext1);
+}
+
+.dangerButton {
+  background-color: var(--red);
+  color: var(--base);
+}
+
+.dangerButton:hover {
+  background-color: var(--red-600);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.successButton {
+  background-color: var(--green);
+  color: var(--base);
+}
+
+.successButton:hover {
+  background-color: var(--green-600);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.warningButton {
+  background-color: var(--yellow);
+  color: var(--base);
+}
+
+.warningButton:hover {
+  background-color: var(--yellow-600);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+
+  .toggleButton {
+    align-self: stretch;
+    justify-content: center;
+  }
+
+  .colorGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .buttonShowcase {
+    flex-direction: column;
+  }
+
+  .buttonRow {
+    flex-direction: column;
+  }
+}

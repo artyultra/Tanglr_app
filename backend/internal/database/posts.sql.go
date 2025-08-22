@@ -7,15 +7,15 @@ package database
 
 import (
 	"context"
+	"database/sql"
 	"time"
 
 	"github.com/google/uuid"
 )
 
-const createPost = `-- name: CreatePost :one
-INSERT INTO posts (id, body, created_at, updated_at, user_id, username)
-VALUES (gen_random_uuid(), $1, $2, $3, $4, $5)
-RETURNING id, body, created_at, updated_at, user_id, username
+const createPost = `-- name: CreatePost :exec
+INSERT INTO posts (id, body, created_at, updated_at, user_id)
+VALUES (gen_random_uuid(), $1, $2, $3, $4)
 `
 
 type CreatePostParams struct {
@@ -23,49 +23,60 @@ type CreatePostParams struct {
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	UserID    uuid.UUID
-	Username  string
 }
 
-func (q *Queries) CreatePost(ctx context.Context, arg CreatePostParams) (Post, error) {
-	row := q.db.QueryRowContext(ctx, createPost,
+func (q *Queries) CreatePost(ctx context.Context, arg CreatePostParams) error {
+	_, err := q.db.ExecContext(ctx, createPost,
 		arg.Body,
 		arg.CreatedAt,
 		arg.UpdatedAt,
 		arg.UserID,
-		arg.Username,
 	)
-	var i Post
-	err := row.Scan(
-		&i.ID,
-		&i.Body,
-		&i.CreatedAt,
-		&i.UpdatedAt,
-		&i.UserID,
-		&i.Username,
-	)
-	return i, err
+	return err
 }
 
 const getPosts = `-- name: GetPosts :many
-SELECT id, body, created_at, updated_at, user_id, username FROM posts
+SELECT 
+    posts.id, posts.body, posts.created_at, posts.updated_at, posts.user_id, posts.is_deleted, posts.visibility,
+    u.username AS username,
+    up.avatar_url AS avatar_url
+FROM posts
+JOIN users u ON posts.user_id = u.id
+LEFT JOIN user_preferences up ON up.user_id = u.id
+ORDER BY posts.created_at DESC
 `
 
-func (q *Queries) GetPosts(ctx context.Context) ([]Post, error) {
+type GetPostsRow struct {
+	ID         uuid.UUID
+	Body       string
+	CreatedAt  time.Time
+	UpdatedAt  time.Time
+	UserID     uuid.UUID
+	IsDeleted  bool
+	Visibility string
+	Username   string
+	AvatarUrl  sql.NullString
+}
+
+func (q *Queries) GetPosts(ctx context.Context) ([]GetPostsRow, error) {
 	rows, err := q.db.QueryContext(ctx, getPosts)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []Post
+	var items []GetPostsRow
 	for rows.Next() {
-		var i Post
+		var i GetPostsRow
 		if err := rows.Scan(
 			&i.ID,
 			&i.Body,
 			&i.CreatedAt,
 			&i.UpdatedAt,
 			&i.UserID,
+			&i.IsDeleted,
+			&i.Visibility,
 			&i.Username,
+			&i.AvatarUrl,
 		); err != nil {
 			return nil, err
 		}
@@ -81,20 +92,27 @@ func (q *Queries) GetPosts(ctx context.Context) ([]Post, error) {
 }
 
 const getPostsByUsername = `-- name: GetPostsByUsername :many
-SELECT posts.id, posts.body, posts.created_at, posts.updated_at, posts.user_id, posts.username,  users.avatar_url
+SELECT 
+    posts.id, posts.body, posts.created_at, posts.updated_at, posts.user_id, posts.is_deleted, posts.visibility,
+    u.username,
+    up.avatar_url as user_avatar_url
 FROM posts 
-JOIN users ON posts.user_id = users.id
-WHERE users.username = $1
+JOIN users u ON posts.user_id = u.id
+LEFT JOIN user_preferences up ON up.user_id = u.id
+WHERE u.username = $1
+ORDER BY posts.created_at DESC
 `
 
 type GetPostsByUsernameRow struct {
-	ID        uuid.UUID
-	Body      string
-	CreatedAt time.Time
-	UpdatedAt time.Time
-	UserID    uuid.UUID
-	Username  string
-	AvatarUrl string
+	ID            uuid.UUID
+	Body          string
+	CreatedAt     time.Time
+	UpdatedAt     time.Time
+	UserID        uuid.UUID
+	IsDeleted     bool
+	Visibility    string
+	Username      string
+	UserAvatarUrl sql.NullString
 }
 
 func (q *Queries) GetPostsByUsername(ctx context.Context, username string) ([]GetPostsByUsernameRow, error) {
@@ -112,8 +130,10 @@ func (q *Queries) GetPostsByUsername(ctx context.Context, username string) ([]Ge
 			&i.CreatedAt,
 			&i.UpdatedAt,
 			&i.UserID,
+			&i.IsDeleted,
+			&i.Visibility,
 			&i.Username,
-			&i.AvatarUrl,
+			&i.UserAvatarUrl,
 		); err != nil {
 			return nil, err
 		}

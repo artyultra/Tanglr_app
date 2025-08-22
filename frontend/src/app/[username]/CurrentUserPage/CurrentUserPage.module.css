@@ -1,0 +1,281 @@
+.profileWrapper {
+  width: 100%;
+  margin: 0;
+  background-color: var(--base);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.2s ease;
+}
+
+.banner {
+  display: flex;
+  align-items: center;
+  padding: 0.4rem 1rem;
+}
+
+.banner svg {
+  color: var(--text);
+  width: 1.2rem;
+}
+
+.bannerHeader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  align-items: start;
+  gap: 0.4rem;
+  margin-left: 1.3rem;
+}
+
+.bannerTitle {
+  color: var(--text);
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.bannerSubtext {
+  color: var(--subtext0);
+  font-size: 0.8rem;
+}
+
+.searchButton {
+  margin-left: auto;
+  background-color: transparent;
+}
+
+.searchButton svg {
+  color: var(--subtext0);
+}
+
+.coverImage {
+  display: flex;
+  justify-content: left;
+  width: 100%;
+  height: auto;
+  background: linear-gradient(135deg, var(--blue), var(--mauve));
+  overflow: hidden;
+}
+
+.coverImage img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.profileHeader {
+  height: fit-content;
+}
+
+.avatarSection {
+  display: flex;
+  height: fit; /* Same as half cover image height */
+  justify-content: space-between;
+  align-items: flex-start; /* Align to top since avatar should start at cover edge */
+  padding: 0 20px; /* Add some side padding */
+}
+
+.avatar {
+  height: 100px; /* Fixed size that matches avatarSection */
+  width: auto;
+  border-radius: 50%;
+  border: 4px solid var(--base);
+  background-color: var(--lavender);
+  margin: -15% 0 0 0;
+}
+
+.editButton {
+  margin-top: 1rem; /* Remove the previous margin-top */
+  padding: 8px 16px;
+  border: 1px solid var(--overlay0);
+  border-radius: 20px;
+  background-color: var(--base);
+  color: var(--text);
+  cursor: pointer;
+  font-weight: 600;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.editButton:hover {
+  background-color: var(--surface1);
+}
+
+.profileInfo {
+  margin-bottom: 16px;
+  padding: 0 20px; /* Add side padding to match avatarSection */
+}
+
+/* Rest of your existing styles remain the same */
+.displayName {
+  font-size: 20px;
+  font-weight: 700;
+  margin: 0 0 4px 0;
+  color: var(--text);
+}
+
+.username {
+  color: var(--subtext0);
+  font-size: 15px;
+  margin: 0 0 12px 0;
+}
+
+.bio {
+  font-size: 15px;
+  line-height: 1.4;
+  margin: 0 0 12px 0;
+  color: var(--text);
+}
+
+.joinDate {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--subtext0);
+  font-size: 14px;
+  margin-bottom: 12px;
+}
+
+.stats {
+  display: flex;
+  gap: 20px;
+}
+
+.statItem {
+  display: flex;
+  gap: 4px;
+  font-size: 14px;
+  color: var(--text);
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.statItem:hover {
+  color: var(--blue);
+}
+
+.statNumber {
+  font-weight: 700;
+  color: var(--text);
+}
+
+.statLabel {
+  color: var(--subtext0);
+}
+
+.tabs {
+  display: flex;
+  border-bottom: 1px solid var(--surface2);
+}
+
+.tab {
+  flex: 1;
+  padding: 16px;
+  text-align: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 15px;
+  color: var(--subtext0);
+  font-weight: 500;
+  position: relative;
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.tab:hover {
+  background-color: var(--surface1);
+}
+
+.tabActive {
+  color: var(--text);
+  font-weight: 700;
+}
+
+.tabActive::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 4px;
+  background-color: var(--blue);
+  border-radius: 2px;
+}
+
+.content {
+  padding: 20px;
+}
+
+.tweet {
+  padding: 16px 0;
+  border-bottom: 1px solid var(--surface2);
+}
+
+.tweet:last-child {
+  border-bottom: none;
+}
+
+.tweetHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.tweetAuthor {
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--text);
+}
+
+.tweetTime {
+  color: var(--subtext0);
+  font-size: 14px;
+}
+
+.tweetContent {
+  font-size: 15px;
+  line-height: 1.4;
+  margin-bottom: 12px;
+  color: var(--text);
+}
+
+.tweetActions {
+  display: flex;
+  gap: 40px;
+}
+
+.tweetAction {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--subtext0);
+  font-size: 13px;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.tweetAction:hover:nth-child(1) {
+  color: var(--blue);
+}
+
+.tweetAction:hover:nth-child(2) {
+  color: var(--green);
+}
+
+.tweetAction:hover:nth-child(3) {
+  color: var(--red);
+}
+
+.emptyState {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--subtext0);
+}
+
+@media (max-width: 1280px) {
+  /* Add responsive adjustments if needed */
+}

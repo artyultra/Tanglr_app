@@ -1,0 +1,189 @@
+.postCard {
+  display: flex;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--surface0);
+  transition: background-color 0.2s ease;
+  cursor: pointer;
+}
+
+.postCard:hover {
+  background-color: var(--surface0);
+}
+
+.avatarContainer {
+  margin-right: 12px;
+  flex-shrink: 0;
+}
+
+.avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.postContent {
+  flex: 1;
+  min-width: 0;
+}
+
+.postHeader {
+  display: flex;
+  align-items: center;
+  margin-bottom: 4px;
+  position: relative;
+}
+
+.displayName {
+  font-weight: 700;
+  color: var(--text);
+  margin-right: 4px;
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.displayName:hover {
+  text-decoration: underline;
+}
+
+.username {
+  color: var(--subtext1);
+  margin-right: 4px;
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.separator {
+  color: var(--subtext1);
+  margin: 0 4px;
+}
+
+.timestamp {
+  color: var(--subtext1);
+  font-size: 15px;
+}
+
+.timestamp:hover {
+  text-decoration: underline;
+}
+
+.moreButton {
+  margin-left: auto;
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  border-radius: 50%;
+  transition: background-color 0.2s ease;
+  position: absolute;
+  right: -8px;
+  top: -8px;
+}
+
+.moreButton:hover {
+  background-color: var(--blue-100);
+}
+
+.moreIcon {
+  width: 18px;
+  height: 18px;
+  color: var(--subtext1);
+}
+
+.moreButton:hover .moreIcon {
+  color: var(--blue);
+}
+
+.postText {
+  color: var(--text);
+  font-size: 15px;
+  line-height: 20px;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+  margin-bottom: 12px;
+}
+
+.postActions {
+  display: flex;
+  justify-content: space-between;
+  max-width: 425px;
+  margin-top: 12px;
+}
+
+.actionButton {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  margin: -8px;
+  border-radius: 50%;
+  transition: background-color 0.2s ease;
+  color: var(--subtext1);
+  font-size: 13px;
+}
+
+.actionIcon {
+  width: 18px;
+  height: 18px;
+  color: currentColor;
+}
+
+.actionCount {
+  min-width: 24px;
+  text-align: left;
+}
+
+.actionButton:nth-child(1):hover {
+  background-color: var(--blue-100);
+  color: var(--blue);
+}
+
+.actionButton:nth-child(2):hover {
+  background-color: var(--green-100);
+  color: var(--green);
+}
+
+.actionButton:nth-child(3):hover {
+  background-color: var(--red-100);
+  color: var(--red);
+}
+
+.actionButton:nth-child(4):hover {
+  background-color: var(--blue-100);
+  color: var(--blue);
+}
+
+@media (max-width: 600px) {
+  .postCard {
+    padding: 12px;
+  }
+  
+  .avatar {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .displayName {
+    font-size: 15px;
+  }
+  
+  .username,
+  .timestamp {
+    font-size: 14px;
+  }
+  
+  .postText {
+    font-size: 14px;
+  }
+}
