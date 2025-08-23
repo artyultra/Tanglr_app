@@ -1,24 +1,50 @@
+// src/app/[username]/CurrentUserPage/CurrentUserPage.tsx
 "use client";
 
-import { User } from "@/types/users";
+import { UploadThingResponse, User } from "@/types/users";
 import styles from "./CurrentUserPage.module.css";
 import { useEffect, useState } from "react";
 import { PostDisplay } from "@/types/posts";
 import { postsService } from "@/services/posts";
 import PostCard from "@/components/PostCard/PostCard";
 import { Session } from "next-auth";
-import { ArrowLeft, Search } from "lucide-react";
+import { ArrowLeft, Plus, Search } from "lucide-react";
+import { usePostContext } from "@/contexts/PostContext";
+import { UploadButton } from "@/services/uploadThing";
+import { usersService } from "@/services/users";
 
 interface CurrentUserPageProps {
   userData: User;
-  session: Session;
+  session: Session | null;
+  handleRefreshUserData: () => void;
 }
 
-const CurrentUserPage = ({ userData, session }: CurrentUserPageProps) => {
+const CurrentUserPage = ({
+  userData,
+  session,
+  handleRefreshUserData,
+}: CurrentUserPageProps) => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
   const [posts, setPosts] = useState<PostDisplay[]>([]);
+  const [isEditing, setIsEditing] = useState(false);
+  const { postFetchTrigger } = usePostContext();
 
+  const handleBackButton = () => {
+    window.history.back();
+  };
+
+  const handleUpdateAvatar = async (res: UploadThingResponse[]) => {
+    try {
+      const avatarUrl = res[0].url;
+      await usersService.putAvatar(avatarUrl, session?.accessToken);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsEditing(false);
+      handleRefreshUserData();
+    }
+  };
   useEffect(() => {
     const fetchPosts = async () => {
       try {
@@ -29,19 +55,21 @@ const CurrentUserPage = ({ userData, session }: CurrentUserPageProps) => {
         setPosts(postsData || []);
       } catch (error) {
         const errorToSet =
-          error instanceof Error ? error : new Error(String(error));
+          error instanceof Error ? error : new Error("Error fetching posts");
         setError(errorToSet);
       } finally {
         setIsLoading(false);
       }
     };
     fetchPosts();
-  }, [session]);
+  }, [session, postFetchTrigger]);
 
   return (
     <div className={styles.profileWrapper}>
       <div className={styles.banner}>
-        <ArrowLeft />
+        <button className={styles.backButton} onClick={handleBackButton}>
+          <ArrowLeft />
+        </button>
         <div className={styles.bannerHeader}>
           <h1 className={styles.bannerTitle}>{userData.username}</h1>
           <p
@@ -57,14 +85,66 @@ const CurrentUserPage = ({ userData, session }: CurrentUserPageProps) => {
       </div>
       <div className={styles.profileHeader}>
         <div className={styles.avatarSection}>
-          {userData.avatar_url && (
+          <div className={styles.avatarContainer}>
+            {/* Avatar image */}
             <img
               src={userData.avatar_url}
               alt={`${userData.username}'s avatar`}
               className={styles.avatar}
             />
-          )}
-          <button className={styles.editButton}>Edit Profile</button>
+
+            {/* Upload overlay - only shown when editing */}
+            {isEditing && (
+              <UploadButton
+                endpoint="avatarUpload"
+                onClientUploadComplete={(res) => handleUpdateAvatar(res)}
+                onUploadError={(err) => console.log(err)}
+                className={styles.uploadOverlay} // Custom class for positioning
+                appearance={{
+                  container: {
+                    width: "fit-content",
+                    height: "fit-content",
+                    padding: "0",
+                  },
+                  button: {
+                    position: "absolute",
+                    top: "0",
+                    left: "0",
+                    width: "fit-content",
+                    height: "fit-content",
+                    background: "transparent",
+                    border: "none",
+                    padding: "0",
+                    margin: "0",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    cursor: "pointer",
+                  },
+                  label: {
+                    outline: "none",
+                  },
+                  allowedContent: {
+                    display: "none",
+                  },
+                }}
+                content={{
+                  button: (
+                    <span className={styles.changeText}>
+                      <Plus />
+                    </span>
+                  ),
+                }}
+              />
+            )}
+          </div>
+
+          <button
+            onClick={() => setIsEditing(!isEditing)}
+            className={styles.editButton}
+          >
+            {isEditing ? "Cancel" : "Edit Profile"}
+          </button>
         </div>
 
         <div className={styles.profileInfo}>

@@ -69,6 +69,7 @@ func main() {
 
 		v1Router.Post("/users", handlerCfg.HandlerCreateUser)
 		v1Router.Get("/users/{username}", handlerCfg.HandlerGetUser)
+		v1Router.Put("/users/me/avatar", handlerCfg.HandlerPutAvatarUrl)
 		// v1Router.Get("/users/{username}/friends", handlerCfg.HandlerGetNonFriends)
 		// v1Router.Get("/users/{username}/friendslist", handlerCfg.HandlerGetFriends)
 		// v1Router.Post("/users/{username}/friends/{friendUsername}", handlerCfg.HandlerAddFriend)

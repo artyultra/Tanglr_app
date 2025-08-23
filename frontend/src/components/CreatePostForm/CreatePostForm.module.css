@@ -1,0 +1,105 @@
+.postFormContainer {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  background-color: color-mix(in srgb, var(--base) 95%, transparent);
+  border-radius: 8px;
+}
+
+.banner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+
+.banner svg {
+  width: 1.5rem;
+  color: var(--text);
+}
+
+.banner button {
+  background-color: transparent;
+  border: none;
+}
+
+.banner button span {
+  font-size: 1.2rem;
+  color: var(--blue-300);
+}
+
+.postInputContainer {
+  display: flex;
+  justify-content: left;
+  align-items: start;
+}
+
+.postInputContainer textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  font-size: 16px;
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  min-height: 100px;
+  resize: vertical;
+  margin-top: 0.2rem;
+  resize: none;
+}
+
+.postInputContainer textarea:focus {
+  outline: none;
+  border: 1px solid var(--accent-primary);
+}
+
+.divider {
+  margin: 0 0.5rem;
+  border-bottom: 1px solid var(--surface2);
+}
+
+.postFormContainer button {
+  align-self: flex-end;
+  background-color: var(--accent-primary);
+  color:;
+  border: none;
+  border-radius: 20px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.postActions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.postActionBtns {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  margin-left: 0.7rem;
+}
+
+.postActionBtns svg {
+  color: var(--flamingo);
+}
+
+.postActions button {
+  margin: 0 0.2rem;
+}
+
+.postActions button svg {
+  color: var(--blue-400);
+}
+
+.postFormContainer button:hover:not(:disabled) {
+  opacity: 0.9;
+}
+
+.postFormContainer button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

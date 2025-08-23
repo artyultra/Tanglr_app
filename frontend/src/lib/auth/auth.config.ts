@@ -1,3 +1,4 @@
+import { usersService } from "@/services/users";
 import type { NextAuthConfig } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import GitHub from "next-auth/providers/github";
@@ -29,33 +30,21 @@ export default {
         try {
           // Call your Go backend login endpoint
           console.log("[Auth] Attempting login for user:", username);
-          const response = await fetch(`${process.env.API_BASE_URL}/login`, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ username, password }),
-          });
-
-          const responseText = await response.text();
-          console.log("[Auth] Response status:", response.status);
-          console.log("[Auth] Response body:", responseText);
-
-          if (!response.ok) {
-            console.error("[Auth] Login failed with status:", response.status);
-            return null;
-          }
-
-          const data = JSON.parse(responseText);
+          const res = await usersService.login(username, password);
 
           // Return user object that will be saved in JWT
           return {
-            id: data.id,
-            username: data.username,
-            email: data.email,
-            accessToken: data.token,
-            refreshToken: data.refresh_token,
-            avatarUrl: data.avatar_url || "",
+            id: res.id,
+            username: res.username,
+            email: res.email,
+            createdAt: res.created_at,
+            updatedAt: res.updated_at,
+            avatarUrl: res.avatar_url,
+            coverUrl: res.cover_url,
+            darkMode: res.dark_mode,
+            exists: res.exists,
+            accessToken: res.token,
+            refreshToken: res.refresh_token,
           };
         } catch (error) {
           console.error("[Auth] Login error:", error);

@@ -1,50 +1,71 @@
-import { auth } from "@/lib/auth/auth";
-import { redirect } from "next/navigation";
-import { notFound } from "next/navigation";
+// src/app/[username]/page.tsx
+"use client";
+
+import { useSession } from "next-auth/react";
+import { useEffect, useState } from "react";
+import { User } from "@/types/users";
 import { usersService } from "@/services/users";
-import styles from "./page.module.css";
+import { useParams, useRouter } from "next/navigation";
 import CurrentUserPage from "./CurrentUserPage/CurrentUserPage";
-import PublicPage from "./PublicPage";
+import PublicPage from "./PublicProfilePage/PublicPage";
 
-interface UserProfilePageProps {
-  params: {
-    username: string;
+const ProfilePage = () => {
+  const router = useRouter();
+  const { data: session, status } = useSession();
+  const { username } = useParams();
+  const [userData, setUserData] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
+
+  const handleRefreshUserData = () => {
+    setIsLoading(true);
+    fetchUserData();
   };
-}
 
-export default async function UserProfilePage({
-  params,
-}: UserProfilePageProps) {
-  const session = await auth();
+  const fetchUserData = async () => {
+    try {
+      const resData = await usersService.getUser(
+        username as string,
+        session?.accessToken,
+      );
+      if (!resData?.exists) {
+        router.push("/404");
+      }
+      setUserData(resData);
+    } catch (error) {
+      const errorToSet =
+        error instanceof Error ? error : new Error(String(error));
+      setError(errorToSet);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-  if (!session?.user || !session?.accessToken) {
-    redirect("/login");
-  }
-
-  let userData;
-  try {
-    userData = await usersService.getUser(params.username, session.accessToken);
-    console.log(userData);
-  } catch (error) {
-    console.error("Error fetching user data:", error);
-    userData = null;
-  }
-
-  if (!userData || !userData.exists) {
-    notFound();
-  }
-
-  const isOwnProfile = session.user.username === params.username;
-
-  console.log(userData);
+  useEffect(() => {
+    if (status === "loading") {
+      return;
+    }
+    if (status === "authenticated") {
+      fetchUserData();
+    }
+  }, [session, status, username]);
 
   return (
-    <div className={styles.container}>
-      {isOwnProfile ? (
-        <CurrentUserPage userData={userData} session={session} />
+    <>
+      {!session && <p>You are not logged in.</p>}
+      {error && <p>Error: {error.message}</p>}
+      {isLoading && <p>Loading...</p>}
+      {userData ? (
+        <CurrentUserPage
+          userData={userData}
+          session={session}
+          handleRefreshUserData={handleRefreshUserData}
+        />
       ) : (
         <PublicPage userData={userData} />
       )}
-    </div>
+    </>
   );
-}
+};
+
+export default ProfilePage;

@@ -2,12 +2,18 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, User, Settings } from "lucide-react";
+import { Home, User, Settings, SquarePen } from "lucide-react";
 import styles from "./Sidebar.module.css";
 import { useAuth } from "@/hooks/auth/useAuth";
 import ProfileButton from "../ProfileButton";
+import { UploadButton } from "@/services/uploadThing";
+import { UploadDropzone } from "@uploadthing/react";
 
-export default function Sidebar() {
+interface SidebarProps {
+  onComposeClick: () => void;
+}
+
+const Sidebar = ({ onComposeClick }: SidebarProps) => {
   const pathname = usePathname();
   const session = useAuth();
 
@@ -21,7 +27,7 @@ export default function Sidebar() {
                 href="/home"
                 className={`${styles.a} ${pathname === "/home" ? styles.active : ""}`}
               >
-                <Home />
+                <Home size={20} />
               </Link>
             </li>
             {session?.user && (
@@ -46,6 +52,14 @@ export default function Sidebar() {
                     <User size={20} />
                   </Link>
                 </li>
+                <li>
+                  <button
+                    className={styles.composeBtn}
+                    onClick={onComposeClick}
+                  >
+                    <SquarePen size={20} />
+                  </button>
+                </li>
               </>
             )}
           </ul>
@@ -54,4 +68,6 @@ export default function Sidebar() {
       </div>
     </aside>
   );
-}
+};
+
+export default Sidebar;

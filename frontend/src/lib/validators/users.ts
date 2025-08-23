@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from "zod";
 
 export const userSchema = z.object({
   id: z.string().uuid().optional(),
@@ -11,14 +11,17 @@ export const userSchema = z.object({
 });
 
 export const loginSchema = z.object({
-  username: z.string().min(1, 'Username is required'),
-  password: z.string().min(1, 'Password is required'),
+  username: z.string().min(3, "Username is required"),
+  password: z.string().min(5, "Password is required"),
 });
 
 export const createUserSchema = z.object({
-  username: z.string().min(3, 'Username must be at least 3 characters').max(50, 'Username must be less than 50 characters'),
-  email: z.string().email('Invalid email address'),
-  password: z.string().min(8, 'Password must be at least 8 characters'),
+  username: z
+    .string()
+    .min(3, "Username must be at least 3 characters")
+    .max(50, "Username must be less than 50 characters"),
+  email: z.string().email("Invalid email address"),
+  password: z.string().min(8, "Password must be at least 8 characters"),
 });
 
 export const friendsSchema = z.object({
@@ -40,3 +43,4 @@ export type LoginInput = z.infer<typeof loginSchema>;
 export type CreateUserInput = z.infer<typeof createUserSchema>;
 export type FriendsValidated = z.infer<typeof friendsSchema>;
 export type FriendUserValidated = z.infer<typeof friendUserSchema>;
+

@@ -30,15 +30,14 @@
   flex-direction: column;
   list-style: none;
   gap: 1.5rem;
-  margin: 0;
-  padding:;
 }
 
 .nav li {
   width: fit-content;
 }
 
-.nav a {
+.nav a,
+.nav button {
   color: var(--text);
   transition: all 0.2s ease;
   padding: 0.75rem 1rem 0;
@@ -82,6 +81,12 @@
 
 .button:hover {
   cursor: pointer;
+  padding: 0;
+  width: fit-content;
+}
+
+.nav li svg {
+  color: var(--text);
 }
 
 @media (max-width: 930px) {

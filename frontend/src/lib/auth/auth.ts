@@ -17,8 +17,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           username: user.username,
           email: user.email,
           accessToken: user.accessToken,
-          refreshToken: user.refreshToken,
           avatarUrl: user.avatarUrl,
+          darkMode: user.darkMode,
+          refreshToken: user.refreshToken,
           accessTokenExpires: Date.now() + 60 * 60 * 1000,
         };
       }
@@ -37,7 +38,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           id: token.id as string,
           username: token.username as string,
           email: token.email as string,
-          avatarUrl: token.avatarUrl as string,
+          avatarUrl: token.avatarUrl,
+          darkMode: token.darkMode,
         };
         session.accessToken = token.accessToken as string;
         session.error = token.error as string | undefined;
@@ -53,7 +55,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       return baseUrl;
     },
     async signIn({ user, account, profile }) {
-      // After successful sign in, redirect to user's profile
+      // If the user is already logged in, return early
       return true;
     },
   },

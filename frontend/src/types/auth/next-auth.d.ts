@@ -8,6 +8,7 @@ declare module "next-auth" {
       username: string;
       email: string;
       avatarUrl: string;
+      darkMode: boolean;
     } & DefaultSession["user"];
     accessToken: string;
     error?: string;
@@ -20,6 +21,7 @@ declare module "next-auth" {
     accessToken: string;
     refreshToken: string;
     avatarUrl: string;
+    darkMode: boolean;
     exists?: boolean;
   }
 }
@@ -33,6 +35,7 @@ declare module "next-auth/jwt" {
     refreshToken: string;
     accessTokenExpires: number;
     avatarUrl: string;
+    darkMode: boolean;
     error?: string;
   }
 }

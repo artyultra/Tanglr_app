@@ -20,3 +20,20 @@ func (q *Queries) CreateUserPreferences(ctx context.Context, userID uuid.UUID) e
 	_, err := q.db.ExecContext(ctx, createUserPreferences, userID)
 	return err
 }
+
+const putAvatarUrl = `-- name: PutAvatarUrl :exec
+UPDATE user_preferences
+SET avatar_url = $1,
+    updated_at = now()
+WHERE user_id = $2
+`
+
+type PutAvatarUrlParams struct {
+	AvatarUrl string
+	UserID    uuid.UUID
+}
+
+func (q *Queries) PutAvatarUrl(ctx context.Context, arg PutAvatarUrlParams) error {
+	_, err := q.db.ExecContext(ctx, putAvatarUrl, arg.AvatarUrl, arg.UserID)
+	return err
+}

@@ -7,10 +7,7 @@ export const ENDPOINTS = {
   USERS: {
     CREATE: "/users",
     GET: (username: string) => `/users/${username}`,
-    GET_NON_FRIENDS: (username: string) => `/users/${username}/friends`,
-    GET_FRIENDS_LIST: (username: string) => `/users/${username}/friendslist`,
-    ADD_FRIEND: (username: string, friendUsername: string) =>
-      `/users/${username}/friends/${friendUsername}`,
+    PUT_AVATAR: "/users/me/avatar",
   },
   POSTS: {
     CREATE: "/posts",

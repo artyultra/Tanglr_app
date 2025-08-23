@@ -1,6 +1,7 @@
-import { httpClient, ENDPOINTS, STORAGE_KEYS } from "@/lib/api";
+// src/services/users.ts
+
+import { httpClient, ENDPOINTS, STORAGE_KEYS, API_URL } from "@/lib/api";
 import {
-  loginSchema,
   createUserSchema,
   type LoginInput,
   type CreateUserInput,
@@ -12,40 +13,48 @@ import type {
   CreateUserResponse,
   RefreshTokenResponse,
   GetUserResponse,
-  GetNonFriendsResponse,
-  GetFriendsListResponse,
-  AddFriendResponse,
+  UpdateAvatarRequest,
 } from "@/types/users";
 
 export class UsersService {
-  async login(data: LoginInput): Promise<LoginResponse> {
-    const validatedData = loginSchema.parse(data);
-
+  async login(username: string, password: string): Promise<LoginResponse> {
     const requestData: LoginRequest = {
-      username: validatedData.username,
-      password: validatedData.password,
+      username: username,
+      password: password,
     };
 
-    const response = await httpClient.post<LoginResponse>(
-      ENDPOINTS.AUTH.LOGIN,
-      requestData,
-      { headers: {} },
-    );
-
-    if (typeof window !== "undefined") {
-      localStorage.setItem(STORAGE_KEYS.ACCESS_TOKEN, response.token);
-      localStorage.setItem(STORAGE_KEYS.REFRESH_TOKEN, response.refresh_token);
-      localStorage.setItem(
-        STORAGE_KEYS.USER,
-        JSON.stringify({
-          id: response.id,
-          username: response.username,
-          email: response.email,
-        }),
+    try {
+      const response = await httpClient.post<LoginResponse>(
+        ENDPOINTS.AUTH.LOGIN,
+        requestData,
+        { headers: { "Content-Type": "application/json" } },
       );
-    }
+      console.log("[UsersService] Login successful, response:", response);
 
-    return response;
+      if (typeof window !== "undefined") {
+        localStorage.setItem(STORAGE_KEYS.ACCESS_TOKEN, response.token);
+        localStorage.setItem(
+          STORAGE_KEYS.REFRESH_TOKEN,
+          response.refresh_token,
+        );
+        localStorage.setItem(
+          STORAGE_KEYS.USER,
+          JSON.stringify({
+            id: response.id,
+            username: response.username,
+            email: response.email,
+            avatarUrl: response.avatar_url,
+            darkMode: response.dark_mode,
+          }),
+        );
+        console.log("[UsersService] Stored user data in localStorage");
+      }
+
+      return response;
+    } catch (error) {
+      console.error("[UsersService] Login error:", error);
+      throw error;
+    }
   }
 
   async createUser(data: CreateUserInput): Promise<CreateUserResponse> {
@@ -64,37 +73,35 @@ export class UsersService {
   }
 
   async getUser(
-    username: string,
+    username: string | undefined,
     accessToken?: string,
   ): Promise<GetUserResponse> {
     const options = accessToken
       ? { headers: { Authorization: `Bearer ${accessToken}` } }
       : undefined;
+    if (username) {
+      return httpClient.get<GetUserResponse>(
+        ENDPOINTS.USERS.GET(username),
+        options,
+      );
+    } else {
+      throw new Error("Username is undefined");
+    }
+  }
 
-    return httpClient.get<GetUserResponse>(
-      ENDPOINTS.USERS.GET(username),
+  async putAvatar(avatarUrl: string, accessToken?: string): Promise<void> {
+    const options = accessToken
+      ? { headers: { Authorization: `Bearer ${accessToken}` } }
+      : undefined;
+
+    const requestData: UpdateAvatarRequest = {
+      avatar_url: avatarUrl,
+    };
+
+    return httpClient.put<void>(
+      ENDPOINTS.USERS.PUT_AVATAR,
+      requestData,
       options,
-    );
-  }
-
-  async getNonFriends(username: string): Promise<GetNonFriendsResponse> {
-    return httpClient.get<GetNonFriendsResponse>(
-      ENDPOINTS.USERS.GET_NON_FRIENDS(username),
-    );
-  }
-
-  async getFriendsList(username: string): Promise<GetFriendsListResponse> {
-    return httpClient.get<GetFriendsListResponse>(
-      ENDPOINTS.USERS.GET_FRIENDS_LIST(username),
-    );
-  }
-
-  async addFriend(
-    username: string,
-    friendUsername: string,
-  ): Promise<AddFriendResponse> {
-    return httpClient.post<AddFriendResponse>(
-      ENDPOINTS.USERS.ADD_FRIEND(username, friendUsername),
     );
   }
 
@@ -152,6 +159,16 @@ export class UsersService {
     }
   }
 
+  getCurrentUserAvatarUrl(): string | null {
+    const user = this.getCurrentUser();
+    return user?.avatarUrl || null;
+  }
+
+  getCurrentUserDarkMode(): boolean {
+    const user = this.getCurrentUser();
+    return user?.darkMode ?? true;
+  }
+
   getCurrentUser(): any {
     if (typeof window !== "undefined") {
       const userStr = localStorage.getItem(STORAGE_KEYS.USER);
@@ -169,4 +186,3 @@ export class UsersService {
 }
 
 export const usersService = new UsersService();
-

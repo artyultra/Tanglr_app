@@ -76,8 +76,16 @@ class HttpClient {
 
     if (!response.ok) {
       const error = await response.json().catch(() => ({}));
+      console.error(`[HttpClient] Request failed:`, {
+        url,
+        status: response.status,
+        statusText: response.statusText,
+        error,
+        method: options.method,
+        body: options.body,
+      });
       throw new Error(
-        error.message || `HTTP error! status: ${response.status}`,
+        error.message || error.error || `HTTP error! status: ${response.status}`,
       );
     }
 

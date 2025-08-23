@@ -9,12 +9,20 @@
 .banner {
   display: flex;
   align-items: center;
-  padding: 0.4rem 1rem;
+  padding: 0.8rem 1rem;
 }
 
-.banner svg {
+.backButton {
+  background-color: transparent;
+}
+
+.backButton svg {
   color: var(--text);
-  width: 1.2rem;
+  width: 1.7rem;
+  &:hover {
+    cursor: pointer;
+    color: var(--subtext0);
+  }
 }
 
 .bannerHeader {
@@ -29,8 +37,8 @@
 
 .bannerTitle {
   color: var(--text);
-  font-size: 1.1rem;
-  font-weight: 700;
+  font-size: 1.4rem;
+  font-weight: 900;
 }
 
 .bannerSubtext {
@@ -45,6 +53,9 @@
 
 .searchButton svg {
   color: var(--subtext0);
+  &:hover {
+    color: var(--text);
+  }
 }
 
 .coverImage {
@@ -74,13 +85,51 @@
   padding: 0 20px; /* Add some side padding */
 }
 
+.avatarContainer {
+  position: relative; /* Container for absolute positioning */
+  display: inline-block;
+  margin: -8% 0 0 0;
+  /* This keeps the container only as big as the avatar */
+}
+
 .avatar {
-  height: 100px; /* Fixed size that matches avatarSection */
-  width: auto;
+  height: 100px;
+  width: 100px; /* Make it square for better overlay */
   border-radius: 50%;
   border: 4px solid var(--base);
   background-color: var(--lavender);
-  margin: -15% 0 0 0;
+  display: block;
+}
+
+.uploadOverlay {
+  position: absolute; /* Positioned relative to .avatarContainer */
+  width: 50%;
+  height: 50%;
+  top: 32%;
+  left: 32%;
+  background-color: transparent;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.2s ease;
+  cursor: pointer;
+}
+
+.uploadOvlerlay:focus {
+  outline: none;
+}
+
+.changeText {
+  background: transparent;
+  border: 1px solid rgba(60, 60, 60, 0.6);
+  border-radius: 20%;
+  color: rgba(60, 60, 60, 0.6);
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 4px;
+  pointer-events: none; /* Let clicks pass through to UploadButton */
 }
 
 .editButton {
@@ -276,6 +325,8 @@
   color: var(--subtext0);
 }
 
-@media (max-width: 1280px) {
-  /* Add responsive adjustments if needed */
+@media (max-width: 768px) {
+  .avatarContainer {
+    margin: -14% 0 0 0;
+  }
 }

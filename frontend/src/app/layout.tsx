@@ -5,8 +5,7 @@ import "@styles/normalize.css";
 import "@styles/theme.css";
 import { AuthProvider } from "@/components/auth/AuthProvider";
 import { themeScript } from "@/lib/theme-script";
-import Sidebar from "@/components/Sidebar/Sidebar";
-import RightSidebar from "@/components/RightSidebar/RightSidebar";
+import { LayoutClient } from "@/components";
 
 const jetBrainsMono = JetBrains_Mono({
   variable: "--font-jetbrains-mono",
@@ -30,11 +29,7 @@ export default function RootLayout({
       </head>
       <body className={jetBrainsMono.className} suppressHydrationWarning>
         <AuthProvider>
-          <div className="app-layout">
-            <Sidebar />
-            <main className="app-main">{children}</main>
-            <RightSidebar />
-          </div>
+          <LayoutClient>{children}</LayoutClient>
         </AuthProvider>
       </body>
     </html>

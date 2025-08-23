@@ -6,6 +6,7 @@ import { PostDisplay } from "@/types/posts";
 import { postsService } from "@/services/posts";
 import { Session } from "next-auth";
 import PostCard from "@/components/PostCard/PostCard";
+import { usePostContext } from "@/contexts/PostContext";
 
 interface ForYouProps {
   session: Session;
@@ -16,6 +17,7 @@ const ForYou = ({ session, refreshTrigger }: ForYouProps) => {
   const [posts, setPosts] = useState<PostDisplay[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
+  const { postFetchTrigger } = usePostContext();
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -31,7 +33,7 @@ const ForYou = ({ session, refreshTrigger }: ForYouProps) => {
       }
     };
     fetchPosts();
-  }, [refreshTrigger]);
+  }, [refreshTrigger, postFetchTrigger]);
 
   return (
     <div className={styles.feed}>

@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState, useRef, useEffect } from "react";
 import SignOutButton from "@/components/SignOutButton/SignOutButton";
 import ColorToggleButton from "@/components/ColorToggleButton";
