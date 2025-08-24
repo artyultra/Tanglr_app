@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"log"
 	"net/http"
 	"time"
 
@@ -13,6 +14,7 @@ type Response struct {
 }
 
 func (cfg *Config) HandlerRefreshToken(w http.ResponseWriter, r *http.Request) {
+	log.Println("Refreshing token")
 	authHeader, err := auth.AuthHeaderHelper(w, r)
 	if err != nil {
 		helpers.RespondWithError(w, http.StatusUnauthorized, "Unauthorized: missing or invalid token AUTHHELPER", err)
@@ -31,7 +33,7 @@ func (cfg *Config) HandlerRefreshToken(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	newAccessToken, err := auth.MakeJWT(user.ID, user.Username, cfg.jwtSecret, time.Minute)
+	newAccessToken, err := auth.MakeJWT(user.ID, user.Username, cfg.jwtSecret, time.Hour)
 	if err != nil {
 		helpers.RespondWithError(w, http.StatusInternalServerError, "Couldn't create token", err)
 		return

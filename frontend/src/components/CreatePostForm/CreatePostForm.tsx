@@ -12,8 +12,6 @@ import {
   Video,
   X,
 } from "lucide-react";
-import { UploadButton } from "@/services/uploadThing";
-import { UploadThingResponse } from "@/types/users";
 
 interface CreatePostFromProps {
   session: Session | null;
@@ -53,11 +51,6 @@ const CreatePostForm = ({
     }
   };
 
-  const handleAvatarUpload = async (res: UploadThingResponse) => {
-    // try {} catch (error) finally {}
-    console.log(res);
-  };
-
   useEffect(() => {
     if (!session) return;
     setUserInfo({
@@ -83,7 +76,7 @@ const CreatePostForm = ({
         </button>
       </div>
       <div className={styles.postInputContainer}>
-        <img src={userInfo?.avatarUrl} alt="user avatar" />
+        <img src={userInfo ? userInfo.avatarUrl : "#"} alt="user avatar" />
         <textarea
           placeholder="What's on your mind?"
           value={postText}
@@ -93,26 +86,7 @@ const CreatePostForm = ({
       <div className={styles.divider} />
       <div className={styles.postActions}>
         <div className={styles.postActionBtns}>
-          <UploadButton
-            endpoint="avatarUpload"
-            onClientUploadComplete={handleAvatarUpload}
-            onUploadError={(err) => console.error(err)}
-            appearance={{
-              button: {
-                background: "transparent",
-                border: "none",
-                color: "transparent",
-                width: "fit-content",
-                height: "fit-content",
-              },
-              allowedContent: {
-                display: "none",
-              },
-            }}
-            content={{
-              button: <Image />,
-            }}
-          />
+          <Image />
           <ImagePlay />
           <Video />
           <ListTodo />

@@ -32,7 +32,7 @@ const ForYou = ({ session, refreshTrigger }: ForYouProps) => {
       }
     };
     fetchPosts();
-  }, [refreshTrigger, postFetchTrigger]);
+  }, [refreshTrigger, postFetchTrigger, session]);
 
   return (
     <div className={styles.feed}>

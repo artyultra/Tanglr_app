@@ -1,20 +1,19 @@
 import { auth } from "@/lib/auth/auth";
 import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
 
 export default auth((req) => {
   const isLoggedIn = !!req.auth;
   const username = req.auth?.user?.username;
   const pathname = req.nextUrl.pathname;
-  
+
   const isAuthPage =
     pathname.startsWith("/login") ||
     pathname.startsWith("/register") ||
     pathname.startsWith("/forgot-password");
-  
+
   const isApiAuthRoute = pathname.startsWith("/api/auth");
   const isHomePage = pathname === "/";
-  
+
   // Allow auth API routes and public pages
   if (isApiAuthRoute || isHomePage) {
     return NextResponse.next();
@@ -27,7 +26,7 @@ export default auth((req) => {
 
   // User profile routes are protected by the (protected) layout
   // so we don't need additional checks here
-  
+
   return NextResponse.next();
 });
 

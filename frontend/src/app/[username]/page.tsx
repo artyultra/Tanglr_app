@@ -55,7 +55,6 @@ const ProfilePage = () => {
       {userData ? (
         <CurrentUserPage
           userData={userData}
-          session={session}
           handleRefreshUserData={handleRefreshUserData}
         />
       ) : (

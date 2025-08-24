@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { postsService } from "@/services/posts";
 import { User } from "@/types/users";
 import { Image, FileImage, Smile, BarChart3 } from "lucide-react";

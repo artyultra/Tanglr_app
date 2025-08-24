@@ -1,7 +1,6 @@
 // components/PostModal/PostModal.tsx
 "use client";
 import styles from "./PostModal.module.css";
-import { X } from "lucide-react";
 import CreatePostFrom from "../CreatePostForm/CreatePostForm";
 import { Session } from "next-auth";
 

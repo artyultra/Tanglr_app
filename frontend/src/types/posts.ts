@@ -21,7 +21,6 @@ export interface CreatePostRequest {
   body: string;
 }
 
-export interface CreatePostResponse extends Post {}
+export type CreatePostResponse = Post;
 
 export type GetPostsResponse = PostDisplay[];
-

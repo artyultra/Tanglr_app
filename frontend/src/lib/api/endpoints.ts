@@ -11,7 +11,7 @@ export const ENDPOINTS = {
   },
   POSTS: {
     CREATE: "/posts",
-    GET_BY_USERNAME: (username: string) => `/posts/${username}`,
+    GET_BY_USERNAME: (username: string | undefined) => `/posts/${username}`,
     GET_ALL: "/posts",
   },
   ADMIN: {

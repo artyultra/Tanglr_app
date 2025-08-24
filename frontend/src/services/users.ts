@@ -11,17 +11,13 @@ import type {
   GetUserResponse,
   UpdateAvatarRequest,
 } from "@/types/users";
+import { Session, User } from "next-auth";
 
 export class UsersService {
-  private updateSessionCallback?: () => Promise<any>;
-  private logoutCallback?: () => Promise<void>;
+  private updateSessionCallback?: () => Promise<Session | null>;
 
-  setSessionUpdateCallback(updateFn: () => Promise<any>) {
+  setSessionUpdateCallback(updateFn: () => Promise<Session | null>) {
     this.updateSessionCallback = updateFn;
-  }
-
-  setLogoutCallback(logoutFn: () => Promise<void>) {
-    this.logoutCallback = logoutFn;
   }
 
   private async executeWithAutoRetry<T>(
@@ -47,7 +43,6 @@ export class UsersService {
           return await operation();
         } catch (error) {
           console.error("Error refreshing session:", error);
-          this.logoutCallback?.();
           this.logout();
           throw new Error("Session expired and could not be refreshed");
         }
@@ -108,7 +103,7 @@ export class UsersService {
   }
 
   async getUser(
-    username: string | undefined,
+    username: string | null,
     accessToken?: string,
   ): Promise<GetUserResponse> {
     const operation = async () => {
@@ -189,7 +184,6 @@ export class UsersService {
       localStorage.removeItem(STORAGE_KEYS.USER);
     }
     this.updateSessionCallback = undefined;
-    this.logoutCallback = undefined;
   }
 
   getCurrentUserAvatarUrl(): string | null {
@@ -202,7 +196,7 @@ export class UsersService {
     return user?.darkMode ?? true;
   }
 
-  getCurrentUser(): any {
+  getCurrentUser(): User | null {
     if (typeof window !== "undefined") {
       const userStr = localStorage.getItem(STORAGE_KEYS.USER);
       return userStr ? JSON.parse(userStr) : null;

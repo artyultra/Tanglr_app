@@ -6,8 +6,6 @@ import { Home, User, Settings, SquarePen } from "lucide-react";
 import styles from "./Sidebar.module.css";
 import { useAuth } from "@/hooks/auth/useAuth";
 import ProfileButton from "../ProfileButton";
-import { UploadButton } from "@/services/uploadThing";
-import { UploadDropzone } from "@uploadthing/react";
 
 interface SidebarProps {
   onComposeClick: () => void;

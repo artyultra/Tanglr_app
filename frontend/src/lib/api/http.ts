@@ -117,7 +117,7 @@ class HttpClient {
 
   async post<T>(
     endpoint: string,
-    data?: any,
+    data?: unknown,
     options?: RequestOptions,
   ): Promise<T> {
     return this.request<T>(endpoint, {
@@ -129,7 +129,7 @@ class HttpClient {
 
   async put<T>(
     endpoint: string,
-    data?: any,
+    data?: unknown,
     options?: RequestOptions,
   ): Promise<T> {
     return this.request<T>(endpoint, {
@@ -148,7 +148,7 @@ class HttpClient {
 
   async patch<T>(
     endpoint: string,
-    data?: any,
+    data?: unknown,
     options?: RequestOptions,
   ): Promise<T> {
     return this.request<T>(endpoint, {

@@ -34,7 +34,7 @@ class APIClient {
     return res.json();
   }
 
-  async post(endpoint: string, data: any) {
+  async post(endpoint: string, data: unknown) {
     const headers = await this.getHeaders();
     const res = await fetch(`${this.baseURL}${endpoint}`, {
       method: "POST",
@@ -49,7 +49,7 @@ class APIClient {
     return res.json();
   }
 
-  async put(endpoint: string, data: any) {
+  async put(endpoint: string, data: unknown) {
     const headers = await this.getHeaders();
     const res = await fetch(`${this.baseURL}${endpoint}`, {
       method: "PUT",

@@ -1,7 +1,7 @@
 "use client";
 import { Sidebar, RightSidebar, PostModal } from "@/components";
 import { useEffect, useState } from "react";
-import { signOut, useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import { PostProvider, usePostContext } from "@/contexts/PostContext";
 import { usersService } from "@/services/users";
 
@@ -16,7 +16,6 @@ const LayoutClientInner = ({ children }: LayoutClientProps) => {
 
   useEffect(() => {
     usersService.setSessionUpdateCallback(update);
-    usersService.setLogoutCallback(signOut);
   }, [update]);
 
   return (

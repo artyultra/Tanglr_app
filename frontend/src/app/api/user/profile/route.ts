@@ -24,6 +24,7 @@ export async function GET() {
     const profile = await res.json();
     return NextResponse.json(profile);
   } catch (error) {
+    console.log(error);
     return NextResponse.json(
       { error: "Internal Server Error" },
       { status: 500 },
@@ -59,6 +60,7 @@ export async function PUT(request: Request) {
     const updatedProfile = await res.json();
     return NextResponse.json(updatedProfile);
   } catch (error) {
+    console.log(error);
     return NextResponse.json(
       { error: "Internal Server Error" },
       { status: 500 },

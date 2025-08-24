@@ -7,21 +7,19 @@ import { useEffect, useState } from "react";
 import { PostDisplay } from "@/types/posts";
 import { postsService } from "@/services/posts";
 import PostCard from "@/components/PostCard/PostCard";
-import { Session } from "next-auth";
 import { ArrowLeft, Plus, Search } from "lucide-react";
 import { usePostContext } from "@/contexts/PostContext";
 import { UploadButton } from "@/services/uploadThing";
 import { usersService } from "@/services/users";
+import { useSession } from "next-auth/react";
 
 interface CurrentUserPageProps {
   userData: User;
-  session: Session | null;
   handleRefreshUserData: () => void;
 }
 
 const CurrentUserPage = ({
   userData,
-  session,
   handleRefreshUserData,
 }: CurrentUserPageProps) => {
   const [isLoading, setIsLoading] = useState(true);
@@ -29,6 +27,7 @@ const CurrentUserPage = ({
   const [posts, setPosts] = useState<PostDisplay[]>([]);
   const [isEditing, setIsEditing] = useState(false);
   const { postFetchTrigger } = usePostContext();
+  const { data: session } = useSession();
 
   const handleBackButton = () => {
     window.history.back();
@@ -82,7 +81,10 @@ const CurrentUserPage = ({
         </button>
       </div>
       <div className={styles.coverImage}>
-        <img src="https://68rdbf2n6t.ufs.sh/f/eFaWLjkdXdtlUWBy5FXcWR3rVUzBTD2ukjxYylC9Gm7iqA4o" />
+        <img
+          src="https://68rdbf2n6t.ufs.sh/f/eFaWLjkdXdtlUWBy5FXcWR3rVUzBTD2ukjxYylC9Gm7iqA4o"
+          alt="Profile Cover Image"
+        />
       </div>
       <div className={styles.profileHeader}>
         <div className={styles.avatarSection}>
@@ -121,9 +123,6 @@ const CurrentUserPage = ({
                     alignItems: "center",
                     justifyContent: "center",
                     cursor: "pointer",
-                  },
-                  label: {
-                    outline: "none",
                   },
                   allowedContent: {
                     display: "none",

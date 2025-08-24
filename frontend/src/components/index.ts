@@ -1,4 +1,3 @@
-export { default as AsideMenu } from "./AsideMenu/AsideMenu";
 export { default as ColorToggleButton } from "./ColorToggleButton/ColorToggleButton";
 export { default as PostModal } from "./PostModal/PostModal";
 export { default as CreatePostForm } from "./CreatePostForm/CreatePostForm";

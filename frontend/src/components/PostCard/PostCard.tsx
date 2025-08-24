@@ -1,5 +1,11 @@
 import { PostDisplay } from "@/types/posts";
-import { MessageCircle, Repeat2, Heart, Share, MoreHorizontal } from "lucide-react";
+import {
+  MessageCircle,
+  Repeat2,
+  Heart,
+  Share,
+  MoreHorizontal,
+} from "lucide-react";
 import styles from "./PostCard.module.css";
 
 interface PostCardProps {
@@ -10,7 +16,7 @@ const formatTimeAgo = (dateString: string): string => {
   const date = new Date(dateString);
   const now = new Date();
   const seconds = Math.floor((now.getTime() - date.getTime()) / 1000);
-  
+
   if (seconds < 60) return `${seconds}s`;
   const minutes = Math.floor(seconds / 60);
   if (minutes < 60) return `${minutes}m`;
@@ -18,12 +24,12 @@ const formatTimeAgo = (dateString: string): string => {
   if (hours < 24) return `${hours}h`;
   const days = Math.floor(hours / 24);
   if (days < 7) return `${days}d`;
-  
-  const month = date.toLocaleDateString('en-US', { month: 'short' });
+
+  const month = date.toLocaleDateString("en-US", { month: "short" });
   const day = date.getDate();
   const year = date.getFullYear();
   const currentYear = now.getFullYear();
-  
+
   if (year === currentYear) {
     return `${month} ${day}`;
   }
@@ -34,10 +40,10 @@ const PostCard = ({ post }: PostCardProps) => {
   return (
     <article className={styles.postCard}>
       <div className={styles.avatarContainer}>
-        <img 
+        <img
           className={styles.avatar}
-          src={post.avatar_url || '/default-avatar.png'} 
-          alt={`${post.username} avatar`} 
+          src={post.avatar_url || "/default-avatar.png"}
+          alt={`${post.username} avatar`}
         />
       </div>
       <div className={styles.postContent}>
@@ -45,7 +51,9 @@ const PostCard = ({ post }: PostCardProps) => {
           <span className={styles.displayName}>{post.username}</span>
           <span className={styles.username}>@{post.username}</span>
           <span className={styles.separator}>·</span>
-          <time className={styles.timestamp}>{formatTimeAgo(post.created_at)}</time>
+          <time className={styles.timestamp}>
+            {formatTimeAgo(post.created_at)}
+          </time>
           <button className={styles.moreButton} aria-label="More options">
             <MoreHorizontal className={styles.moreIcon} />
           </button>

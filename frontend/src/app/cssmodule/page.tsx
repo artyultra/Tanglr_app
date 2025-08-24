@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import styles from "./ColorPalette.module.css";
 import ColorToggleButton from "@/components/ColorToggleButton/ColorToggleButton";
 

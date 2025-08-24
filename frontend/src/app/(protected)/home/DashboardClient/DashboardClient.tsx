@@ -44,7 +44,7 @@ const DashboardClient = ({ session }: DashboardClientProps) => {
       }
     };
     fetchUserData();
-  }, []);
+  }, [session]);
 
   return (
     <div className={styles.container}>

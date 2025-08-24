@@ -1,8 +1,7 @@
 import NextAuth from "next-auth";
 import authConfig from "./auth.config";
-import { JWT } from "next-auth/jwt";
 import { usersService } from "@/services/users";
-import { jwt } from "zod";
+import { JWT } from "next-auth/jwt";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   ...authConfig,
@@ -26,17 +25,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         };
       }
 
-      console.log(
-        "Token expires in: ",
-        new Date(token.accessTokenExpires).toLocaleTimeString("en-US", {
-          hour12: true,
-        }),
-      );
-      console.log(
-        "Now is: ",
-        new Date().toLocaleTimeString("en-US", { hour12: true }),
-      );
-      console.log(Date.now() + token.accessTokenExpires);
+      if (!token.accessTokenExpires) {
+        return token;
+      }
+
       if (Date.now() < token.accessTokenExpires) {
         return token;
       }
@@ -44,14 +36,21 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       return await refreshAccessToken(token);
     },
     async session({ session, token }) {
-      if (token) {
+      // Handle refresh token errors
+      if (token.error === "RefreshAccessTokenError") {
+        session.error = token.error;
+        return session;
+      }
+
+      // Add safety check
+      if (token && token.id) {
         session.user = {
           ...session.user,
           id: token.id as string,
           username: token.username as string,
           email: token.email as string,
-          avatarUrl: token.avatarUrl,
-          darkMode: token.darkMode,
+          avatarUrl: token.avatarUrl as string,
+          darkMode: token.darkMode as boolean,
         };
         session.accessToken = token.accessToken as string;
         session.refreshToken = token.refreshToken as string;
@@ -67,7 +66,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       // Default redirect to base URL
       return baseUrl;
     },
-    async signIn({ user }) {
+    async signIn({}) {
       // If the user is already logged in, return early
       return true;
     },
@@ -84,12 +83,13 @@ async function refreshAccessToken(token: JWT) {
       ...token,
       accessToken: res.access_token,
       accessTokenExpires: decodeJWT(res.access_token),
+      error: undefined,
     };
   } catch (error) {
     console.error("Refresh access token error:", error);
     return {
       ...token,
-      error: error as string,
+      error: "RefreshAccessTokenError",
     };
   }
 }

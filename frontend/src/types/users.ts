@@ -23,7 +23,7 @@ export interface loginCredentials {
   };
 }
 
-export interface GetUserResponse extends User {}
+export type GetUserResponse = User;
 
 export interface LoginResponse {
   id: string;
@@ -45,7 +45,7 @@ export interface CreateUserRequest {
   password: string;
 }
 
-export interface CreateUserResponse extends User {}
+export type CreateUserResponse = User;
 
 export interface UpdateAvatarRequest {
   avatar_url: string;
