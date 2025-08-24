@@ -24,10 +24,7 @@ const ProfilePage = () => {
 
   const fetchUserData = async () => {
     try {
-      const resData = await usersService.getUser(
-        username as string,
-        session?.accessToken,
-      );
+      const resData = await usersService.getUser(username as string);
       if (!resData?.exists) {
         router.push("/404");
       }

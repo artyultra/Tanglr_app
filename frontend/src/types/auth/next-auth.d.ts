@@ -11,6 +11,7 @@ declare module "next-auth" {
       darkMode: boolean;
     } & DefaultSession["user"];
     accessToken: string;
+    refreshToken: string;
     error?: string;
   }
 

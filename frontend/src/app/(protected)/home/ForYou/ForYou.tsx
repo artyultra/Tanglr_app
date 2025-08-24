@@ -7,7 +7,6 @@ import { postsService } from "@/services/posts";
 import { Session } from "next-auth";
 import PostCard from "@/components/PostCard/PostCard";
 import { usePostContext } from "@/contexts/PostContext";
-
 interface ForYouProps {
   session: Session;
   refreshTrigger: number;

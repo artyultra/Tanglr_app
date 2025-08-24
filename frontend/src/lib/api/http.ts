@@ -20,9 +20,16 @@ class HttpClient {
     this.timeout = timeout;
   }
 
-  private getToken(): string | null {
+  private getAccessToken(): string | null {
     if (typeof window !== "undefined") {
       return localStorage.getItem(STORAGE_KEYS.ACCESS_TOKEN);
+    }
+    return null;
+  }
+
+  private getRefreshToken(): string | null {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem(STORAGE_KEYS.REFRESH_TOKEN);
     }
     return null;
   }
@@ -57,7 +64,10 @@ class HttpClient {
     options: RequestOptions = {},
   ): Promise<T> {
     const url = `${this.baseURL}${endpoint}`;
-    const token = this.getToken();
+
+    // Check for a token in options first, then in localStorage
+    const passedAuthHeader = normalizeHeaders(options.headers)["Authorization"];
+    const token = passedAuthHeader ? null : this.getAccessToken();
 
     // Normalize incoming headers to a plain object we can index/spread safely
     const headers: Record<string, string> = {
@@ -65,7 +75,7 @@ class HttpClient {
       ...normalizeHeaders(options.headers),
     };
 
-    if (token) {
+    if (token && !headers["Authorization"]) {
       headers["Authorization"] = `Bearer ${token}`;
     }
 
@@ -85,7 +95,9 @@ class HttpClient {
         body: options.body,
       });
       throw new Error(
-        error.message || error.error || `HTTP error! status: ${response.status}`,
+        error.message ||
+          error.error ||
+          `HTTP error! status: ${response.status}`,
       );
     }
 

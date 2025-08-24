@@ -39,7 +39,9 @@ const PostInput = ({
   return (
     <div className={styles.composeSection}>
       <div className={styles.composeContainer}>
-        <div className={styles.composeAvatar}>{userData.username}</div>
+        <div className={styles.composeAvatar}>
+          <img src={userData?.avatar_url} alt="Avatar" />
+        </div>
         <div className={styles.composeContent}>
           <textarea
             className={styles.composeInput}

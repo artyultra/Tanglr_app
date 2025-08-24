@@ -20,6 +20,12 @@
   font-weight: 700;
   color: var(--base);
   flex-shrink: 0;
+  overflow: hidden;
+}
+
+.composeAvatar img {
+  width: 100%;
+  height: auto;
 }
 
 .composeContent {
@@ -110,3 +116,4 @@
 .postButton:active:not(:disabled) {
   transform: scale(0.98);
 }
+

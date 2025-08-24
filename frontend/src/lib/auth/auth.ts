@@ -1,6 +1,8 @@
 import NextAuth from "next-auth";
 import authConfig from "./auth.config";
 import { JWT } from "next-auth/jwt";
+import { usersService } from "@/services/users";
+import { jwt } from "zod";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   ...authConfig,
@@ -20,11 +22,21 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           avatarUrl: user.avatarUrl,
           darkMode: user.darkMode,
           refreshToken: user.refreshToken,
-          accessTokenExpires: Date.now() + 60 * 60 * 1000,
+          accessTokenExpires: decodeJWT(user.accessToken),
         };
       }
 
-      // Return previous token if the access token has not expired yet.
+      console.log(
+        "Token expires in: ",
+        new Date(token.accessTokenExpires).toLocaleTimeString("en-US", {
+          hour12: true,
+        }),
+      );
+      console.log(
+        "Now is: ",
+        new Date().toLocaleTimeString("en-US", { hour12: true }),
+      );
+      console.log(Date.now() + token.accessTokenExpires);
       if (Date.now() < token.accessTokenExpires) {
         return token;
       }
@@ -42,6 +54,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           darkMode: token.darkMode,
         };
         session.accessToken = token.accessToken as string;
+        session.refreshToken = token.refreshToken as string;
         session.error = token.error as string | undefined;
       }
       return session;
@@ -54,7 +67,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       // Default redirect to base URL
       return baseUrl;
     },
-    async signIn({ user, account, profile }) {
+    async signIn({ user }) {
       // If the user is already logged in, return early
       return true;
     },
@@ -63,25 +76,14 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
 async function refreshAccessToken(token: JWT) {
   try {
-    const response = await fetch(`${process.env.API_BASE_URL}/refresh-token`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token.accessToken}`,
-      },
-    });
+    console.log("Refreshing token");
 
-    const refreshedToken = await response.json();
-
-    if (!response.ok) {
-      throw refreshedToken;
-    }
+    const res = await usersService.refreshToken(token.refreshToken);
 
     return {
       ...token,
-      accessToken: refreshedToken.token,
-      accessTokenExpires: Date.now() + 60 * 60 * 1000,
-      refreshToken: refreshedToken.token ?? token.refreshToken,
+      accessToken: res.access_token,
+      accessTokenExpires: decodeJWT(res.access_token),
     };
   } catch (error) {
     console.error("Refresh access token error:", error);
@@ -89,5 +91,19 @@ async function refreshAccessToken(token: JWT) {
       ...token,
       error: error as string,
     };
+  }
+}
+
+// function getJwtExpirationDate(jwt: string): D {}
+
+function decodeJWT(jwt: string): number {
+  try {
+    const payload = jwt.split(".")[1];
+    const decoded = JSON.parse(atob(payload));
+
+    return decoded.exp * 1000;
+  } catch (error) {
+    console.error("Error decoding JWT:", error);
+    return Date.now();
   }
 }

@@ -23,7 +23,7 @@ func GetApiKey(headers http.Header) (string, error) {
 func AuthHeaderHelper(w http.ResponseWriter, r *http.Request) (string, error) {
 	authHeader := r.Header.Get("Authorization")
 	if authHeader == "" {
-		return "", fmt.Errorf("no Authorization header found")
+		return "", fmt.Errorf("no Authorization header found ***")
 	}
 
 	headerParts := strings.Split(authHeader, " ")
@@ -61,7 +61,7 @@ func MakeJWT(userID uuid.UUID, username string, tokenSecret string, expiresIn ti
 	claims := CustomClaims{
 		Username: username,
 		RegisteredClaims: jwt.RegisteredClaims{
-			Issuer:    "beehive",
+			Issuer:    "tanglr",
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(expiresIn)),
 			Subject:   userID.String(),
@@ -111,7 +111,7 @@ func ValidateJWT(tokenString, tokenSecret string) (*CustomClaims, error) {
 func GetBearerToken(headers http.Header) (string, error) {
 	authHeader := headers.Get("Authorization")
 	if authHeader == "" {
-		return "", fmt.Errorf("no Authorization header found")
+		return "", fmt.Errorf("no Authorization header found <auth.GetBearerToken>")
 	}
 	if !strings.HasPrefix(authHeader, "Bearer ") {
 		return "", fmt.Errorf("authorization header is not a Bearer token")

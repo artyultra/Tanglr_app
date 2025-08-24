@@ -29,6 +29,8 @@ const LoginPage = () => {
         redirect: false,
       });
 
+      console.log("result", result);
+
       if (result?.error) {
         setError("Invalid username or password");
       } else if (result?.ok) {
@@ -131,4 +133,3 @@ const LoginPage = () => {
 };
 
 export default LoginPage;
-

@@ -15,7 +15,7 @@ type Response struct {
 func (cfg *Config) HandlerRefreshToken(w http.ResponseWriter, r *http.Request) {
 	authHeader, err := auth.AuthHeaderHelper(w, r)
 	if err != nil {
-		helpers.RespondWithError(w, http.StatusUnauthorized, "Unauthorized: missing or invalid token", err)
+		helpers.RespondWithError(w, http.StatusUnauthorized, "Unauthorized: missing or invalid token AUTHHELPER", err)
 		return
 	}
 

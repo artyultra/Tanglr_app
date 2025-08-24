@@ -10,6 +10,7 @@ import ForYou from "../ForYou/ForYou";
 import Following from "../Following/Following";
 
 import styles from "./DashboardClient.module.css";
+import { STORAGE_KEYS } from "@/lib/api";
 
 interface DashboardClientProps {
   session: Session;
@@ -21,12 +22,18 @@ const DashboardClient = ({ session }: DashboardClientProps) => {
   const [activeTab, setActiveTab] = useState<"forYou" | "following">("forYou");
   const [refreshTrigger, setRefreshTrigger] = useState(0);
 
+  if (typeof window !== "undefined") {
+    localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(session.user));
+    localStorage.setItem(STORAGE_KEYS.ACCESS_TOKEN, session.accessToken);
+    localStorage.setItem(STORAGE_KEYS.REFRESH_TOKEN, session.refreshToken);
+  }
+
   useEffect(() => {
     const fetchUserData = async () => {
       try {
         const res = await usersService.getUser(
-          session?.user?.username,
-          session?.accessToken,
+          session.user.username,
+          session.accessToken,
         );
         setUserData(res);
         setColorMode(res?.dark_mode, document.documentElement);

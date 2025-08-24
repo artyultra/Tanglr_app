@@ -1,11 +1,7 @@
 // src/services/users.ts
 
-import { httpClient, ENDPOINTS, STORAGE_KEYS, API_URL } from "@/lib/api";
-import {
-  createUserSchema,
-  type LoginInput,
-  type CreateUserInput,
-} from "@/lib/validators/users";
+import { httpClient, ENDPOINTS, STORAGE_KEYS } from "@/lib/api";
+import { createUserSchema, type CreateUserInput } from "@/lib/validators/users";
 import type {
   LoginRequest,
   LoginResponse,
@@ -17,6 +13,64 @@ import type {
 } from "@/types/users";
 
 export class UsersService {
+  private updateSessionCallback?: () => Promise<any>;
+  private logoutCallback?: () => Promise<void>;
+
+  setSessionUpdateCallback(updateFn: () => Promise<any>) {
+    this.updateSessionCallback = updateFn;
+  }
+
+  setLogoutCallback(logoutFn: () => Promise<void>) {
+    this.logoutCallback = logoutFn;
+  }
+
+  private async executeWithAutoRetry<T>(
+    operation: () => Promise<T>,
+  ): Promise<T> {
+    try {
+      return await operation();
+    } catch (error) {
+      if (
+        error instanceof Error &&
+        (error.message.includes("401") ||
+          error.message.includes("Unauthorized"))
+      ) {
+        console.log("Session expired, refreshing token, ****");
+
+        try {
+          if (this.updateSessionCallback) {
+            await this.updateSessionCallback();
+          } else {
+            await this.performManualRefresh();
+          }
+
+          return await operation();
+        } catch (error) {
+          console.error("Error refreshing session:", error);
+          this.logoutCallback?.();
+          this.logout();
+          throw new Error("Session expired and could not be refreshed");
+        }
+      }
+
+      throw error;
+    }
+  }
+
+  private async performManualRefresh(): Promise<void> {
+    const refreshToken = this.getRefreshToken();
+
+    if (!refreshToken) {
+      throw new Error("No refresh token available");
+    }
+
+    const refreshRes = await this.refreshToken(refreshToken);
+
+    if (typeof window !== "undefined") {
+      localStorage.setItem(STORAGE_KEYS.ACCESS_TOKEN, refreshRes.access_token);
+    }
+  }
+
   async login(username: string, password: string): Promise<LoginResponse> {
     const requestData: LoginRequest = {
       username: username,
@@ -30,25 +84,6 @@ export class UsersService {
         { headers: { "Content-Type": "application/json" } },
       );
       console.log("[UsersService] Login successful, response:", response);
-
-      if (typeof window !== "undefined") {
-        localStorage.setItem(STORAGE_KEYS.ACCESS_TOKEN, response.token);
-        localStorage.setItem(
-          STORAGE_KEYS.REFRESH_TOKEN,
-          response.refresh_token,
-        );
-        localStorage.setItem(
-          STORAGE_KEYS.USER,
-          JSON.stringify({
-            id: response.id,
-            username: response.username,
-            email: response.email,
-            avatarUrl: response.avatar_url,
-            darkMode: response.dark_mode,
-          }),
-        );
-        console.log("[UsersService] Stored user data in localStorage");
-      }
 
       return response;
     } catch (error) {
@@ -76,40 +111,46 @@ export class UsersService {
     username: string | undefined,
     accessToken?: string,
   ): Promise<GetUserResponse> {
-    const options = accessToken
-      ? { headers: { Authorization: `Bearer ${accessToken}` } }
-      : undefined;
-    if (username) {
+    const operation = async () => {
+      if (!username) {
+        throw new Error("Username is undefined");
+      }
+
+      const options = accessToken
+        ? { headers: { Authorization: `Bearer ${accessToken}` } }
+        : undefined;
+
       return httpClient.get<GetUserResponse>(
         ENDPOINTS.USERS.GET(username),
         options,
       );
-    } else {
-      throw new Error("Username is undefined");
-    }
+    };
+    return this.executeWithAutoRetry(operation);
   }
 
   async putAvatar(avatarUrl: string, accessToken?: string): Promise<void> {
-    const options = accessToken
-      ? { headers: { Authorization: `Bearer ${accessToken}` } }
-      : undefined;
+    const opperation = async () => {
+      const options = accessToken
+        ? { headers: { Authorization: `Bearer ${accessToken}` } }
+        : undefined;
 
-    const requestData: UpdateAvatarRequest = {
-      avatar_url: avatarUrl,
+      const requestData: UpdateAvatarRequest = {
+        avatar_url: avatarUrl,
+      };
+
+      return httpClient.put<void>(
+        ENDPOINTS.USERS.PUT_AVATAR,
+        requestData,
+        options,
+      );
     };
-
-    return httpClient.put<void>(
-      ENDPOINTS.USERS.PUT_AVATAR,
-      requestData,
-      options,
-    );
+    return this.executeWithAutoRetry(opperation);
   }
 
-  async refreshToken(): Promise<RefreshTokenResponse> {
-    const refreshToken =
-      typeof window !== "undefined"
-        ? localStorage.getItem(STORAGE_KEYS.REFRESH_TOKEN)
-        : null;
+  async refreshToken(refreshToken?: string): Promise<RefreshTokenResponse> {
+    const options = refreshToken
+      ? { headers: { Authorization: `Bearer ${refreshToken}` } }
+      : undefined;
 
     if (!refreshToken) {
       throw new Error("No refresh token available");
@@ -118,36 +159,26 @@ export class UsersService {
     const response = await httpClient.post<RefreshTokenResponse>(
       ENDPOINTS.AUTH.REFRESH_TOKEN,
       null,
-      {
-        headers: {
-          Authorization: `Bearer ${refreshToken}`,
-        },
-      },
+      options,
     );
-
-    if (typeof window !== "undefined" && response.access_token) {
-      localStorage.setItem(STORAGE_KEYS.ACCESS_TOKEN, response.access_token);
-    }
 
     return response;
   }
 
   async revokeToken(): Promise<void> {
-    const refreshToken =
-      typeof window !== "undefined"
-        ? localStorage.getItem(STORAGE_KEYS.REFRESH_TOKEN)
-        : null;
+    const operation = async () => {
+      const refreshToken = this.getRefreshToken();
 
-    if (!refreshToken) {
-      throw new Error("No refresh token available");
-    }
+      if (!refreshToken) {
+        throw new Error("No refresh token available");
+      }
 
-    await httpClient.delete(ENDPOINTS.AUTH.REVOKE_TOKEN, {
-      headers: {
-        Authorization: `Bearer ${refreshToken}`,
-      },
-    });
+      return httpClient.delete(ENDPOINTS.AUTH.REVOKE_TOKEN, {
+        headers: { Authorization: `Bearer ${refreshToken}` },
+      });
+    };
 
+    await this.executeWithAutoRetry(operation);
     this.logout();
   }
 
@@ -157,6 +188,8 @@ export class UsersService {
       localStorage.removeItem(STORAGE_KEYS.REFRESH_TOKEN);
       localStorage.removeItem(STORAGE_KEYS.USER);
     }
+    this.updateSessionCallback = undefined;
+    this.logoutCallback = undefined;
   }
 
   getCurrentUserAvatarUrl(): string | null {
@@ -173,6 +206,13 @@ export class UsersService {
     if (typeof window !== "undefined") {
       const userStr = localStorage.getItem(STORAGE_KEYS.USER);
       return userStr ? JSON.parse(userStr) : null;
+    }
+    return null;
+  }
+
+  getRefreshToken(): string | null {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem(STORAGE_KEYS.REFRESH_TOKEN);
     }
     return null;
   }

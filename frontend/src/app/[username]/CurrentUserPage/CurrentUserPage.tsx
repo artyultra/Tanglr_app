@@ -36,8 +36,9 @@ const CurrentUserPage = ({
 
   const handleUpdateAvatar = async (res: UploadThingResponse[]) => {
     try {
+      console.log("uploadAvatar Response: \n", res);
       const avatarUrl = res[0].url;
-      await usersService.putAvatar(avatarUrl, session?.accessToken);
+      await usersService.putAvatar(avatarUrl);
     } catch (error) {
       console.log(error);
     } finally {
