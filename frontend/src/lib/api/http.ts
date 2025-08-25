@@ -27,13 +27,6 @@ class HttpClient {
     return null;
   }
 
-  private getRefreshToken(): string | null {
-    if (typeof window !== "undefined") {
-      return localStorage.getItem(STORAGE_KEYS.REFRESH_TOKEN);
-    }
-    return null;
-  }
-
   private async fetchWithTimeout(
     url: string,
     options: RequestOptions = {},

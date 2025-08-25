@@ -1,8 +1,8 @@
-// src/app/[username]/CurrentUserPage/CurrentUserPage.tsx
+// src/app/[username]/AuthenticatedUserPage/AuthenticatedUserPage.tsx
 "use client";
 
 import { UploadThingResponse, User } from "@/types/users";
-import styles from "./CurrentUserPage.module.css";
+import styles from "./AuthenticatedUserPage.module.css";
 import { useEffect, useState } from "react";
 import { PostDisplay } from "@/types/posts";
 import { postsService } from "@/services/posts";
@@ -13,15 +13,15 @@ import { UploadButton } from "@/services/uploadThing";
 import { usersService } from "@/services/users";
 import { useSession } from "next-auth/react";
 
-interface CurrentUserPageProps {
+interface AuthenticatedUserPageProps {
   userData: User;
   handleRefreshUserData: () => void;
 }
 
-const CurrentUserPage = ({
+const AuthenticatedUserPage = ({
   userData,
   handleRefreshUserData,
-}: CurrentUserPageProps) => {
+}: AuthenticatedUserPageProps) => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
   const [posts, setPosts] = useState<PostDisplay[]>([]);
@@ -52,7 +52,7 @@ const CurrentUserPage = ({
           session?.user?.username,
           session?.accessToken,
         );
-        setPosts(postsData || []);
+        postsData === null ? setPosts([]) : setPosts(postsData);
       } catch (error) {
         const errorToSet =
           error instanceof Error ? error : new Error("Error fetching posts");
@@ -164,11 +164,15 @@ const CurrentUserPage = ({
           )}
           <div className={styles.stats}>
             <div className={styles.statItem}>
-              <span className={styles.statNumber}>0</span>
+              <span className={styles.statNumber}>
+                {session?.user?.following}
+              </span>
               <span className={styles.statLabel}>Following</span>
             </div>
             <div className={styles.statItem}>
-              <span className={styles.statNumber}>0</span>
+              <span className={styles.statNumber}>
+                {session?.user?.followers}
+              </span>
               <span className={styles.statLabel}>Followers</span>
             </div>
           </div>
@@ -202,4 +206,4 @@ const CurrentUserPage = ({
   );
 };
 
-export default CurrentUserPage;
+export default AuthenticatedUserPage;

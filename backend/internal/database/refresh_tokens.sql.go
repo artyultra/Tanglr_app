@@ -7,42 +7,37 @@ package database
 
 import (
 	"context"
-	"database/sql"
 	"time"
 
 	"github.com/google/uuid"
 )
 
 const createRefreshToken = `-- name: CreateRefreshToken :one
-INSERT INTO refresh_tokens (token, created_at, updated_at, user_id, expires_at, revoked_at)
-VALUES ($1, $2, $3, $4, $5, $6)
-RETURNING token, created_at, updated_at, user_id, expires_at, revoked_at
+INSERT INTO refresh_tokens (token, user_id, expires_at )
+VALUES ($1, $2, $3)
+ON CONFLICT (user_id)
+DO UPDATE SET
+  token =  EXCLUDED.token,
+  updated_at = NOW(),
+  expires_at = EXCLUDED.expires_at,
+  revoked_at = NULL
+RETURNING token, user_id, created_at, updated_at, expires_at, revoked_at
 `
 
 type CreateRefreshTokenParams struct {
 	Token     string
-	CreatedAt time.Time
-	UpdatedAt time.Time
 	UserID    uuid.UUID
 	ExpiresAt time.Time
-	RevokedAt sql.NullTime
 }
 
 func (q *Queries) CreateRefreshToken(ctx context.Context, arg CreateRefreshTokenParams) (RefreshToken, error) {
-	row := q.db.QueryRowContext(ctx, createRefreshToken,
-		arg.Token,
-		arg.CreatedAt,
-		arg.UpdatedAt,
-		arg.UserID,
-		arg.ExpiresAt,
-		arg.RevokedAt,
-	)
+	row := q.db.QueryRowContext(ctx, createRefreshToken, arg.Token, arg.UserID, arg.ExpiresAt)
 	var i RefreshToken
 	err := row.Scan(
 		&i.Token,
+		&i.UserID,
 		&i.CreatedAt,
 		&i.UpdatedAt,
-		&i.UserID,
 		&i.ExpiresAt,
 		&i.RevokedAt,
 	)
@@ -50,7 +45,7 @@ func (q *Queries) CreateRefreshToken(ctx context.Context, arg CreateRefreshToken
 }
 
 const getRefreshToken = `-- name: GetRefreshToken :one
-SELECT token, created_at, updated_at, user_id, expires_at, revoked_at FROM refresh_tokens
+SELECT token, user_id, created_at, updated_at, expires_at, revoked_at FROM refresh_tokens
 WHERE token = $1
 AND expires_at > NOW()
 AND revoked_at IS NULL
@@ -61,9 +56,9 @@ func (q *Queries) GetRefreshToken(ctx context.Context, token string) (RefreshTok
 	var i RefreshToken
 	err := row.Scan(
 		&i.Token,
+		&i.UserID,
 		&i.CreatedAt,
 		&i.UpdatedAt,
-		&i.UserID,
 		&i.ExpiresAt,
 		&i.RevokedAt,
 	)

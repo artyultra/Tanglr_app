@@ -37,3 +37,12 @@ func (q *Queries) PutAvatarUrl(ctx context.Context, arg PutAvatarUrlParams) erro
 	_, err := q.db.ExecContext(ctx, putAvatarUrl, arg.AvatarUrl, arg.UserID)
 	return err
 }
+
+const resetUserPreferencesTable = `-- name: ResetUserPreferencesTable :exec
+DELETE FROM user_preferences
+`
+
+func (q *Queries) ResetUserPreferencesTable(ctx context.Context) error {
+	_, err := q.db.ExecContext(ctx, resetUserPreferencesTable)
+	return err
+}

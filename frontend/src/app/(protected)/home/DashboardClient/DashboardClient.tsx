@@ -11,6 +11,9 @@ import Following from "../Following/Following";
 
 import styles from "./DashboardClient.module.css";
 import { STORAGE_KEYS } from "@/lib/api";
+import { postsService } from "@/services/posts";
+import { PostDisplay } from "@/types/posts";
+import { usePostContext } from "@/contexts/PostContext";
 
 interface DashboardClientProps {
   session: Session;
@@ -18,9 +21,11 @@ interface DashboardClientProps {
 
 const DashboardClient = ({ session }: DashboardClientProps) => {
   const [userData, setUserData] = useState<User | null>(null);
+  const [postData, setPostData] = useState<PostDisplay[] | []>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<"forYou" | "following">("forYou");
   const [refreshTrigger, setRefreshTrigger] = useState(0);
+  const { postFetchTrigger } = usePostContext();
 
   if (typeof window !== "undefined") {
     localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(session.user));
@@ -28,23 +33,34 @@ const DashboardClient = ({ session }: DashboardClientProps) => {
     localStorage.setItem(STORAGE_KEYS.REFRESH_TOKEN, session.refreshToken);
   }
 
+  const fetchUserData = async () => {
+    try {
+      const res = await usersService.getUser(
+        session.user.username,
+        session.accessToken,
+      );
+      setUserData(res);
+      setColorMode(res?.dark_mode, document.documentElement);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const fetchPosts = async () => {
+    try {
+      const postsData = await postsService.getPosts(session?.accessToken);
+      postsData === null ? setPostData([]) : setPostData(postsData);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const res = await usersService.getUser(
-          session.user.username,
-          session.accessToken,
-        );
-        setUserData(res);
-        setColorMode(res?.dark_mode, document.documentElement);
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
     fetchUserData();
-  }, [session]);
+    fetchPosts();
+  }, [session, refreshTrigger, postFetchTrigger]);
 
   return (
     <div className={styles.container}>
@@ -79,7 +95,7 @@ const DashboardClient = ({ session }: DashboardClientProps) => {
 
           <div className={styles.feedContainer}>
             {activeTab === "forYou" ? (
-              <ForYou session={session} refreshTrigger={refreshTrigger} />
+              <ForYou posts={postData} />
             ) : (
               <Following />
             )}

@@ -30,7 +30,7 @@ export class PostsService {
 
   async getPostsByUsername(
     username: string | undefined,
-    accessToken: string | undefined,
+    accessToken?: string | undefined,
   ): Promise<GetPostsResponse> {
     const options = accessToken
       ? { headers: { Authorization: `Bearer ${accessToken}` } }

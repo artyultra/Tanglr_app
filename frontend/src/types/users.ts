@@ -7,12 +7,31 @@ export interface User {
   avatar_url: string;
   cover_url: string;
   dark_mode: boolean;
+  private_mode: boolean;
+  followers: number;
+  following: number;
   exists?: boolean;
 }
 
 export interface LoginRequest {
   username: string;
   password: string;
+}
+
+export interface LoginResponse {
+  id: string;
+  username: string;
+  email: string;
+  created_at: string;
+  updated_at: string;
+  avatar_url: string;
+  cover_url: string;
+  dark_mode: boolean;
+  following: number;
+  followers: number;
+  exists?: boolean;
+  token: string;
+  refresh_token: string;
 }
 
 export interface loginCredentials {
@@ -24,20 +43,6 @@ export interface loginCredentials {
 }
 
 export type GetUserResponse = User;
-
-export interface LoginResponse {
-  id: string;
-  username: string;
-  email: string;
-  created_at: string;
-  updated_at: string;
-  avatar_url: string;
-  cover_url: string;
-  dark_mode: boolean;
-  exists?: boolean;
-  token: string;
-  refresh_token: string;
-}
 
 export interface CreateUserRequest {
   username: string;

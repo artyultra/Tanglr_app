@@ -3,11 +3,28 @@ package handlers
 import (
 	"database/sql"
 	"net/http"
+	"time"
 
 	"github.com/artyultra/tanglr/handlers/helpers"
 	"github.com/artyultra/tanglr/internal/auth"
 	"github.com/go-chi/chi"
+	"github.com/google/uuid"
 )
+
+type GetUserResponse struct {
+	ID          uuid.UUID `json:"id,omitempty"`
+	Username    string    `json:"username,omitempty"`
+	Email       string    `json:"email,omitempty"`
+	CreatedAt   time.Time `json:"created_at"`
+	UpdatedAt   time.Time `json:"updated_at"`
+	AvatarURL   string    `json:"avatar_url,omitempty"`
+	CoverURL    string    `json:"cover_url,omitempty"`
+	DarkMode    bool      `json:"dark_mode,omitempty"`
+	PrivateMode bool      `json:"private_mode,omitempty"`
+	Followers   int64     `json:"followers"`
+	Following   int64     `json:"following"`
+	Exists      bool      `json:"exists"`
+}
 
 func (cfg *Config) HandlerGetUser(w http.ResponseWriter, r *http.Request) {
 	username := chi.URLParam(r, "username")
@@ -38,16 +55,19 @@ func (cfg *Config) HandlerGetUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user := User{
-		ID:        dbUser.UserID,
-		Email:     dbUser.Email,
-		Username:  dbUser.Username,
-		CreatedAt: dbUser.UserCreatedAt,
-		UpdatedAt: dbUser.UserCreatedAt,
-		AvatarURL: dbUser.AvatarUrl.String,
-		CoverURL:  dbUser.CoverUrl.String,
-		DarkMode:  dbUser.DarkMode.Bool,
-		Exists:    true,
+	user := GetUserResponse{
+		ID:          dbUser.UserID,
+		Email:       dbUser.Email,
+		Username:    dbUser.Username,
+		CreatedAt:   dbUser.UserCreatedAt,
+		UpdatedAt:   dbUser.UserCreatedAt,
+		AvatarURL:   dbUser.AvatarUrl.String,
+		CoverURL:    dbUser.CoverUrl.String,
+		DarkMode:    dbUser.DarkMode.Bool,
+		PrivateMode: dbUser.PrivateMode.Bool,
+		Followers:   dbUser.FollowerCount,
+		Following:   dbUser.FollowingCount,
+		Exists:      true,
 	}
 
 	helpers.RespondWithJSON(w, http.StatusOK, user)

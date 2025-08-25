@@ -13,20 +13,6 @@ import (
 	"github.com/google/uuid"
 )
 
-const changeAvatarForuser = `-- name: ChangeAvatarForuser :exec
-UPDATE user_preferences SET avatar_url = $1 WHERE user_id = $2
-`
-
-type ChangeAvatarForuserParams struct {
-	AvatarUrl string
-	UserID    uuid.UUID
-}
-
-func (q *Queries) ChangeAvatarForuser(ctx context.Context, arg ChangeAvatarForuserParams) error {
-	_, err := q.db.ExecContext(ctx, changeAvatarForuser, arg.AvatarUrl, arg.UserID)
-	return err
-}
-
 const createUser = `-- name: CreateUser :one
 INSERT INTO users (id, username, email, hashed_password, created_at, updated_at)
 VALUES (gen_random_uuid(), $1, $2, $3, $4, $5)
@@ -70,68 +56,6 @@ func (q *Queries) DeleteUser(ctx context.Context, id uuid.UUID) error {
 	return err
 }
 
-const getNonFriendUsers = `-- name: GetNonFriendUsers :many
-SELECT
-    u.id as user_id,
-    u.username,
-    u.email,
-    u.hashed_password,
-    u.created_at as user_created_at,
-    u.updated_at as user_updated_at,
-    up.avatar_url
-FROM
-    users u
-LEFT JOIN
-    user_preferences up ON up.user_id = u.id
-WHERE u.id != $1
-AND NOT EXISTS (
-    SELECT 1 FROM friends f 
-    WHERE (f.user_id = $1 AND f.friend_id = u.id)
-    OR (f.friend_id = $1 AND f.user_id = u.id)
-)
-`
-
-type GetNonFriendUsersRow struct {
-	UserID         uuid.UUID
-	Username       string
-	Email          string
-	HashedPassword string
-	UserCreatedAt  time.Time
-	UserUpdatedAt  time.Time
-	AvatarUrl      sql.NullString
-}
-
-func (q *Queries) GetNonFriendUsers(ctx context.Context, id uuid.UUID) ([]GetNonFriendUsersRow, error) {
-	rows, err := q.db.QueryContext(ctx, getNonFriendUsers, id)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	var items []GetNonFriendUsersRow
-	for rows.Next() {
-		var i GetNonFriendUsersRow
-		if err := rows.Scan(
-			&i.UserID,
-			&i.Username,
-			&i.Email,
-			&i.HashedPassword,
-			&i.UserCreatedAt,
-			&i.UserUpdatedAt,
-			&i.AvatarUrl,
-		); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Close(); err != nil {
-		return nil, err
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
-}
-
 const getUserByEmail = `-- name: GetUserByEmail :one
 SELECT id, username, email, hashed_password, created_at, updated_at FROM users WHERE email = $1
 `
@@ -162,8 +86,21 @@ SELECT
     up.avatar_url,
     up.cover_url,
     up.dark_mode,
+    up.private_mode,
     up.created_at as preferences_created_at,
-    up.updated_at as preferences_updated_at
+    up.updated_at as preferences_updated_at,
+    (
+      SELECT COUNT(*)
+      FROM follows f
+      WHERE f.initiator_id = u.id
+      and f.status = 'accepted'
+    ) as following_count,
+    (
+      SELECT COUNT(*)
+      FROM follows f
+      WHERE f.target_id = u.id
+      and f.status = 'accepted'
+    ) as follower_count
 FROM 
     users u
 LEFT JOIN
@@ -182,8 +119,11 @@ type GetUserByIdRow struct {
 	AvatarUrl            sql.NullString
 	CoverUrl             sql.NullString
 	DarkMode             sql.NullBool
+	PrivateMode          sql.NullBool
 	PreferencesCreatedAt sql.NullTime
 	PreferencesUpdatedAt sql.NullTime
+	FollowingCount       int64
+	FollowerCount        int64
 }
 
 func (q *Queries) GetUserById(ctx context.Context, id uuid.UUID) (GetUserByIdRow, error) {
@@ -200,8 +140,11 @@ func (q *Queries) GetUserById(ctx context.Context, id uuid.UUID) (GetUserByIdRow
 		&i.AvatarUrl,
 		&i.CoverUrl,
 		&i.DarkMode,
+		&i.PrivateMode,
 		&i.PreferencesCreatedAt,
 		&i.PreferencesUpdatedAt,
+		&i.FollowingCount,
+		&i.FollowerCount,
 	)
 	return i, err
 }
@@ -218,8 +161,21 @@ SELECT
     up.avatar_url,
     up.cover_url,
     up.dark_mode,
+    up.private_mode,
     up.created_at as preferences_created_at,
-    up.updated_at as preferences_updated_at
+    up.updated_at as preferences_updated_at,
+    (
+      SELECT COUNT(*)
+      FROM follows f
+      WHERE f.initiator_id = u.id
+      and f.status = 'accepted'
+    ) as following_count,
+    (
+      SELECT COUNT(*)
+      FROM follows f
+      WHERE f.target_id = u.id
+      and f.status = 'accepted'
+    ) as follower_count
 FROM 
     users u
 LEFT JOIN
@@ -238,8 +194,11 @@ type GetUserByUsernameRow struct {
 	AvatarUrl            sql.NullString
 	CoverUrl             sql.NullString
 	DarkMode             sql.NullBool
+	PrivateMode          sql.NullBool
 	PreferencesCreatedAt sql.NullTime
 	PreferencesUpdatedAt sql.NullTime
+	FollowingCount       int64
+	FollowerCount        int64
 }
 
 func (q *Queries) GetUserByUsername(ctx context.Context, username string) (GetUserByUsernameRow, error) {
@@ -256,8 +215,11 @@ func (q *Queries) GetUserByUsername(ctx context.Context, username string) (GetUs
 		&i.AvatarUrl,
 		&i.CoverUrl,
 		&i.DarkMode,
+		&i.PrivateMode,
 		&i.PreferencesCreatedAt,
 		&i.PreferencesUpdatedAt,
+		&i.FollowingCount,
+		&i.FollowerCount,
 	)
 	return i, err
 }

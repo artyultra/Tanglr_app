@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { User } from "@/types/users";
 import { usersService } from "@/services/users";
 import { useParams, useRouter } from "next/navigation";
-import CurrentUserPage from "./CurrentUserPage/CurrentUserPage";
+import AuthenticatedUserPage from "./AuthenticatedUserPage/AuthenticatedUserPage";
 import PublicPage from "./PublicProfilePage/PublicPage";
 
 const ProfilePage = () => {
@@ -53,7 +53,7 @@ const ProfilePage = () => {
       {error && <p>Error: {error.message}</p>}
       {isLoading && <p>Loading...</p>}
       {userData ? (
-        <CurrentUserPage
+        <AuthenticatedUserPage
           userData={userData}
           handleRefreshUserData={handleRefreshUserData}
         />

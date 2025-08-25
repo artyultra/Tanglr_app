@@ -37,6 +37,7 @@ const formatTimeAgo = (dateString: string): string => {
 };
 
 const PostCard = ({ post }: PostCardProps) => {
+  console.log(post);
   return (
     <article className={styles.postCard}>
       <div className={styles.avatarContainer}>

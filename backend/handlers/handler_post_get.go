@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"database/sql"
 	"net/http"
 	"time"
 
@@ -76,6 +77,9 @@ func (cfg *Config) HandlerGetAllPosts(w http.ResponseWriter, r *http.Request) {
 
 	dbPosts, err := cfg.DB.GetPosts(r.Context())
 	if err != nil {
+		if err == sql.ErrNoRows {
+			helpers.RespondWithJSON(w, http.StatusOK, []Post{})
+		}
 		helpers.RespondWithError(w, http.StatusInternalServerError, "Couldn't get posts", err)
 		return
 	}

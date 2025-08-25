@@ -25,11 +25,23 @@ func (cfg *Config) HandlerResetDatabases(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	err = cfg.DB.ResetFriendsTable(r.Context())
+	err = cfg.DB.ResetFollowsTable(r.Context())
 	if err != nil {
 		helpers.RespondWithError(w, http.StatusInternalServerError, "Couldn't reset friends table", err)
 		return
 	}
 
-	helpers.RespondWithJSON(w, http.StatusOK, map[string]string{"message": "Users, Posts, and Refresh Tokens tables have been reset"})
+	err = cfg.DB.ResetUserPreferencesTable(r.Context())
+	if err != nil {
+		helpers.RespondWithError(w, http.StatusInternalServerError, "Couldn't reset user preferences table", err)
+		return
+	}
+
+	message := "reset tables: users, user_preferences, refresh_tokens, posts, follows"
+
+	helpers.RespondWithJSON(
+		w,
+		http.StatusOK,
+		map[string]string{"message": message},
+	)
 }

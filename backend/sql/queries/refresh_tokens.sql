@@ -1,6 +1,12 @@
 -- name: CreateRefreshToken :one
-INSERT INTO refresh_tokens (token, created_at, updated_at, user_id, expires_at, revoked_at)
-VALUES ($1, $2, $3, $4, $5, $6)
+INSERT INTO refresh_tokens (token, user_id, expires_at )
+VALUES ($1, $2, $3)
+ON CONFLICT (user_id)
+DO UPDATE SET
+  token =  EXCLUDED.token,
+  updated_at = NOW(),
+  expires_at = EXCLUDED.expires_at,
+  revoked_at = NULL
 RETURNING *;
 
 -- name: GetRefreshToken :one

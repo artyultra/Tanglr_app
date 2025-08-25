@@ -20,6 +20,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           accessToken: user.accessToken,
           avatarUrl: user.avatarUrl,
           darkMode: user.darkMode,
+          following: user.following,
+          followers: user.followers,
           refreshToken: user.refreshToken,
           accessTokenExpires: decodeJWT(user.accessToken),
         };
@@ -51,6 +53,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           email: token.email as string,
           avatarUrl: token.avatarUrl as string,
           darkMode: token.darkMode as boolean,
+          following: token.following as number,
+          followers: token.followers as number,
         };
         session.accessToken = token.accessToken as string;
         session.refreshToken = token.refreshToken as string;

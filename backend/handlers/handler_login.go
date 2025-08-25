@@ -1,8 +1,8 @@
 package handlers
 
 import (
-	"database/sql"
 	"encoding/json"
+	"log"
 	"net/http"
 	"time"
 
@@ -12,7 +12,8 @@ import (
 )
 
 func (cfg *Config) HandlerLogin(w http.ResponseWriter, r *http.Request) {
-	type paramaters struct {
+	log.Println("LOGIN ATTEMPT")
+	type parameters struct {
 		Username string `json:"username"`
 		Password string `json:"password"`
 	}
@@ -24,10 +25,10 @@ func (cfg *Config) HandlerLogin(w http.ResponseWriter, r *http.Request) {
 	}
 
 	decoder := json.NewDecoder(r.Body)
-	params := paramaters{}
+	params := parameters{}
 	err := decoder.Decode(&params)
 	if err != nil {
-		helpers.RespondWithError(w, http.StatusBadRequest, "Couldn't decode paramaters", err)
+		helpers.RespondWithError(w, http.StatusBadRequest, "Couldn't decode parameters", err)
 		return
 	}
 
@@ -61,16 +62,15 @@ func (cfg *Config) HandlerLogin(w http.ResponseWriter, r *http.Request) {
 
 	refreshToken, err := cfg.DB.CreateRefreshToken(r.Context(), database.CreateRefreshTokenParams{
 		Token:     refreshTokenString,
-		CreatedAt: time.Now(),
-		UpdatedAt: time.Now(),
 		UserID:    user.UserID,
 		ExpiresAt: refreshTokenExpTime,
-		RevokedAt: sql.NullTime{},
 	})
 	if err != nil {
 		helpers.RespondWithError(w, http.StatusInternalServerError, "Couldn't create refresh token", err)
 		return
 	}
+
+	log.Println("LOGIN SUCCESS")
 
 	helpers.RespondWithJSON(w, http.StatusOK, response{
 		User: User{

@@ -1,44 +1,16 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import styles from "./ForYou.module.css";
 import { PostDisplay } from "@/types/posts";
-import { postsService } from "@/services/posts";
-import { Session } from "next-auth";
 import PostCard from "@/components/PostCard/PostCard";
-import { usePostContext } from "@/contexts/PostContext";
 interface ForYouProps {
-  session: Session;
-  refreshTrigger: number;
+  posts: PostDisplay[];
 }
 
-const ForYou = ({ session, refreshTrigger }: ForYouProps) => {
-  const [posts, setPosts] = useState<PostDisplay[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
-  const { postFetchTrigger } = usePostContext();
-
-  useEffect(() => {
-    const fetchPosts = async () => {
-      try {
-        const res = await postsService.getPosts(session?.accessToken);
-        setPosts(res);
-      } catch (error) {
-        const errorToSet =
-          error instanceof Error ? error : new Error(String(error));
-        setError(errorToSet);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchPosts();
-  }, [refreshTrigger, postFetchTrigger, session]);
-
+const ForYou = ({ posts }: ForYouProps) => {
   return (
     <div className={styles.feed}>
-      {error && <div className={styles.error}>{error.message}</div>}
-      {loading && <div className={styles.loading}>Loading...</div>}
-      {!loading && posts.length === 0 ? (
+      {posts.length === 0 ? (
         <div className={styles.emptyFeed}>
           <h3>No posts found</h3>
           <p>Start posting to see your feed here.</p>

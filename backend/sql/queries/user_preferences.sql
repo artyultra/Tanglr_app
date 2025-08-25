@@ -7,3 +7,6 @@ UPDATE user_preferences
 SET avatar_url = $1,
     updated_at = now()
 WHERE user_id = $2;
+
+-- name: ResetUserPreferencesTable :exec
+DELETE FROM user_preferences;

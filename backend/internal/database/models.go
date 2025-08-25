@@ -11,11 +11,10 @@ import (
 	"github.com/google/uuid"
 )
 
-type Friend struct {
-	UserID      uuid.UUID
-	FriendID    uuid.UUID
-	Status      string
+type Follow struct {
 	InitiatorID uuid.UUID
+	TargetID    uuid.UUID
+	Status      string
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
 }
@@ -32,9 +31,9 @@ type Post struct {
 
 type RefreshToken struct {
 	Token     string
+	UserID    uuid.UUID
 	CreatedAt time.Time
 	UpdatedAt time.Time
-	UserID    uuid.UUID
 	ExpiresAt time.Time
 	RevokedAt sql.NullTime
 }
@@ -49,11 +48,12 @@ type User struct {
 }
 
 type UserPreference struct {
-	ID        uuid.UUID
-	AvatarUrl string
-	CoverUrl  string
-	DarkMode  bool
-	UserID    uuid.UUID
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	ID          uuid.UUID
+	AvatarUrl   string
+	CoverUrl    string
+	DarkMode    bool
+	PrivateMode bool
+	UserID      uuid.UUID
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
 }

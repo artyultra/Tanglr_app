@@ -42,6 +42,8 @@ export default {
             avatarUrl: res.avatar_url,
             coverUrl: res.cover_url,
             darkMode: res.dark_mode,
+            following: res.following,
+            followers: res.followers,
             exists: res.exists,
             accessToken: res.token,
             refreshToken: res.refresh_token,

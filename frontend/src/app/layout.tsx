@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { JetBrains_Mono } from "next/font/google";
 import "@styles/globals.css";
-import "@styles/normalize.css";
 import "@styles/theme.css";
 import { AuthProvider } from "@/components/auth/AuthProvider";
 import { themeScript } from "@/lib/theme-script";
@@ -10,6 +9,8 @@ import { LayoutClient } from "@/components";
 const jetBrainsMono = JetBrains_Mono({
   variable: "--font-jetbrains-mono",
   subsets: ["latin"],
+  display: "swap",
+  preload: true,
 });
 
 export const metadata: Metadata = {
